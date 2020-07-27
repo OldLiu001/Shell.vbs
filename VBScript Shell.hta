@@ -1,0 +1,317 @@
+<html lang="zh_CN">
+	<head>
+		<title>Visual Basic Script Shell</title>
+		<HTA:APPLICATION
+			APPLICATIONNAME="VBScript Shell"
+			ID="VBShell"
+			VERSION="1.0"
+			INNERBORDER="no"/>
+		<style>
+			html, body {
+				width: 100%;
+            	height: 100%;
+				margin: 0;
+				border: 0;
+				padding: 0;
+				
+				/*自动滚动条显示*/
+				overflow-y: auto;
+				overflow-x: auto;
+				/*自动换行*/
+			    word-wrap: break-word;
+    			word-break: break-all;
+			}
+			
+			p {
+			    margin: 0px;
+			}
+			
+			#Console {
+			    background-color: #222222;
+			    color: white;
+			    
+			    font-family: "Microsoft yahei mono", "微软雅黑";
+			    letter-spacing: 0px;
+			    font-size: 1.2em;
+			    line-height: 1.2em;
+			    
+			    height: 100%;
+			    position: relative;
+				margin: 0 auto;
+			    border: 10px solid black;
+			    padding: 0;
+			}
+		</style>
+	</head>
+	<body onClick="SetFocus()" onKeyPress="OnKeyPress()">
+		<div id="Console">
+			<span style="color: LightBlue;">
+				VBScript Shell
+			</span>
+			&emsp; Version: 0.4 beta
+			<div Id="InputArea_0">
+				<span style="color: LightGreen;">
+					VBScript
+				</span>
+				&gt;
+				<span id="SingleLineCodeInputer_0" contentEditable="True"></span>
+				<div id="MultiLineCodeInputer_0" contentEditable="False"></div>
+			</div>
+		</div>
+		<script>
+			//模拟WScript对象。
+			var WScript = {
+				"CreateObject" : function(ProgID, Prefix) {
+					if(Prefix) {
+						return new ActiveXObject(ProgID, Prefix);
+					} else {
+						return new ActiveXObject(ProgID);
+					}
+				},
+				"BuildVersion" : 16384,
+				"Echo" : function(){
+					var strText;
+					if(arguments.length){
+						strText = arguments[0];
+						for(var i = 1; i < arguments.length; i++) {
+							strText+='	' + arguments[i];
+						}
+						TextOutPut(strText);
+					}
+					return;
+				}
+			}
+			var WSH = WScript;
+			
+			function TextOutPut(strText) {
+				var pNode = document.createElement("p");
+				pNode.innerText = strText;
+				document.getElementById("Console").appendChild(pNode);
+			}
+		</script>
+		<script language="VBScript">
+			Option Explicit
+			
+			Public nodeInputArea
+			Sub Window_OnLoad
+				Rem 创建InputArea的备份。
+				Set nodeInputArea = document.getElementById("InputArea_0").cloneNode(True)
+				
+				Rem 自动进入输入模式。
+				Call SetFocus()
+			End Sub
+			
+			Rem CodeInputer ID动态返回。
+			Public lngInputerIndex
+			lngInputerIndex = 0
+			Public strInputMode
+			strInputMode = "SingleLineCodeInputer" '默认为单行代码输入模式
+			Function InputerID()
+				InputerID = strInputMode & "_" & CStr(lngInputerIndex)
+			End Function
+			
+			Rem 点击页面时自动让CodeInputer获得焦点。
+			Sub SetFocus()
+				With document
+					If .selection.createRange().text = "" Then '未选中文字时
+						Call .getElementById(InputerID()).Focus
+					End If
+				End With
+			End Sub
+			
+			Rem 按键处理。
+			Public strSavedCode
+			Function OnKeyPress()
+				With document.getElementById(InputerID())
+					Rem 按键后进行高亮处理。
+					If strSavedCode <> .innerText Then
+						.innerHTML = Highlight(.innerText)
+						strSavedCode = .innerText
+					End If
+					
+					Rem 处理特殊按键。
+					'WScript.echo window.event.keyCode
+					Select Case window.event.keyCode
+						Case 13 'Enter
+							If strInputMode = "SingleLineCodeInputer" Then
+								If .innerText = "" Then
+									Rem 单行输入为空并回车，切换为多行代码输入模式。
+									.setAttribute "contentEditable", "False"
+									strInputMode = "MultiLineCodeInputer"
+									document.getElementById _
+										(InputerID()).setAttribute _
+										"contentEditable", "True"
+									Call SetFocus
+									window.event.keyCode = 0 '阻断按键。
+									OnKeyPress = False
+									Exit Function
+								Else 
+									Rem 去掉MultiLineCodeInputer，去掉空行。
+									document.getElementById _
+										("MultiLineCodeInputer_" & CStr(lngInputerIndex)).parentNode.removeChild _
+										(document.getElementById("MultiLineCodeInputer_" & CStr(lngInputerIndex)))
+									
+									Rem 执行单行输入代码。
+									CodeRunner .innerText
+									.setAttribute "contentEditable", "False" '关闭代码输入功能
+									window.event.keyCode = 0
+									OnKeyPress = False
+								End If
+							End If
+						Case 10 'Ctrl+Enter
+							If strInputMode = "MultiLineCodeInputer" Then '只在多行代码输入模式时响应
+								CodeRunner .innerText
+								window.event.keyCode = 0
+								.setAttribute "contentEditable", "False"
+							End If
+							window.event.keyCode = 0
+							OnKeyPress = False
+					End Select
+				End With
+			End Function
+			
+			Sub CodeRunner(strCode)
+				On Error Resume Next
+				ExecuteGlobal strCode
+				If Err.Number <> 0 Then
+					WScript.Echo "脚本错误"
+					WScript.Echo "源：    " & Err.Source 
+					WScript.Echo "描述：  " & Err.Description
+					WScript.Echo "代码：  " & CStr(Err.Number)
+					Err.Clear
+				End If
+				On Error Goto 0
+				
+				Rem 给Console追加新的InputArea。
+				lngInputerIndex = lngInputerIndex + 1
+				nodeInputArea.setAttribute "id", "InputArea_" & CStr(lngInputerIndex)
+				nodeInputArea.getElementsByTagName("span")(1).setAttribute _
+					"id", "SingleLineCodeInputer_" & CStr(lngInputerIndex)
+				nodeInputArea.getElementsByTagName("div")(0).setAttribute _
+					"id", "MultiLineCodeInputer_" & CStr(lngInputerIndex)
+				document.getElementById("Console").appendChild nodeInputArea
+				
+				Rem 备份InputArea。
+				Set nodeInputArea = document.getElementById _
+					("InputArea_" & CStr(lngInputerIndex)).cloneNode(True)
+				
+				Rem 还原输入模式。
+				strInputMode = "SingleLineCodeInputer"
+				Call SetFocus
+			End Sub
+			
+			Function HighLight(strToHighlight)
+				Rem Vbs高亮函数，老刘编写。
+				Rem http://www.bathome.net/thread-47323-1-1.html
+				Rem HTML特殊字符及标签处理感谢bbaa。
+				Rem 灵感 From Demon's Vbs-Beautifier
+				
+				Rem 常量设置
+				Dim STRING_FLAG,COMMENT_FLAG,BLANK_FLAG,SPECIAL_CHAR_FLAG
+				Dim [符号集合],[保留字集合],[内置函数集合],[内置常量集合]
+				STRING_FLAG = Chr(1)
+				COMMENT_FLAG = Chr(2)
+				BLANK_FLAG = Chr(3)
+				SPECIAL_CHAR_FLAG = Chr(4)
+				[符号集合] = ",./\()<=>+-*^&"
+				[保留字集合] = Split("And As Boolean ByRef Byte ByVal Call Case Class Const Currency Debug Dim Do Double Each Else ElseIf Empty End EndIf Enum Eqv Event Exit Explicit False For Function Get Goto If Imp Implements In Integer Is Let Like Long Loop LSet Me Mod New Next Not Nothing Null On Option Optional Or ParamArray Preserve Private Property Public RaiseEvent ReDim Resume RSet Select Set Shared Single Static Stop Sub Then To True Type TypeOf Until Variant WEnd While With Xor"," ")
+				[内置函数集合] = Split("Abs Array Asc Atn CBool CByte CCur CDate CDbl CInt CLng CSng CStr Chr Cos CreateObject Date DateAdd DateDiff DatePart DateSerial DateValue Day Escape Eval Exp Filter Fix FormatCurrency FormatDateTime FormatNumber FormatPercent GetLocale GetObject GetRef Hex Hour InStr InStrRev InputBox Int IsArray IsDate IsEmpty IsNull IsNumeric IsObject Join LBound LCase LTrim Left Len LoadPicture Log Mid Minute Month MonthName MsgBox Now Oct Randomize RGB RTrim Replace Right Rnd Round ScriptEngine ScriptEngineBuildVersion ScriptEngineMajorVersion ScriptEngineMinorVersion Second SetLocale Sgn Sin Space Split Sqr StrComp StrReverse String Tan Time TimeSerial TimeValue Timer Trim TypeName UBound UCase Unescape VarType Weekday WeekdayName Year"," ")
+				[内置常量集合] = Split("vbBlack vbRed vbGreen vbYellow vbBlue vbMagenta vbCyan vbWhite vbBinaryCompare vbTextCompare vbSunday vbMonday vbTuesday vbWednesday vbThursday vbFriday vbSaturday vbUseSystemDayOfWeek vbFirstJan1 vbFirstFourDays vbFirstFullWeek vbGeneralDate vbLongDate vbShortDate vbLongTime vbShortTime vbObjectError vbOKOnly vbOKCancel vbAbortRetryIgnore vbYesNoCancel vbYesNo vbRetryCancel vbCritical vbQuestion vbExclamation vbInformation vbDefaultButton1 vbDefaultButton2 vbDefaultButton3 vbDefaultButton4 vbApplicationModal vbSystemModal vbOK vbCancel vbAbort vbRetry vbIgnore vbYes vbNo vbCr vbCrLf vbFormFeed vbLf vbNewLine vbNullChar vbNullString vbTab vbVerticalTab vbUseDefault vbTrue vbFalse vbEmpty vbNull vbInteger vbLong vbSingle vbDouble vbCurrency vbDate vbString vbObject vbError vbBoolean vbVariant vbDataObject vbDecimal vbByte vbArray WScript Wsh"," ")
+				
+				Rem 正则对象初始化
+				Dim re
+				Set re = New RegExp
+				re.Global = True
+				re.IgnoreCase = True
+				re.MultiLine = False
+				
+				Rem 读取代码
+				Dim strCode
+				strCode = strToHighlight
+				
+				Rem HTML特殊符号预处理
+				Dim [着色标签],[换行标签],[空白字符]
+				[着色标签] = "<span style=""color:|ReplaceHere|;"">$1</span>"
+				[换行标签] = "<br>"
+				[空白字符] = "&nbsp;"
+				strCode = Replace(strCode,"&",SPECIAL_CHAR_FLAG&"amp;")
+				strCode = Replace(strCode,">",SPECIAL_CHAR_FLAG&"gt;")
+				strCode = Replace(strCode,"<",SPECIAL_CHAR_FLAG&"lt;")
+				
+				Rem 预处理字符串
+				Dim [字符串集合]
+				re.Pattern = """.*?"""
+				Set [字符串集合] = re.Execute(strCode)
+				strCode = re.Replace(strCode, STRING_FLAG)
+				
+				Rem 预处理空字符
+				strCode = Replace(strCode,Chr(9),"    ")
+				strCode = Replace(strCode," ",BLANK_FLAG)
+				
+				Rem 预处理换行
+				strCode = Replace(strCode,vbNewLine,vbCr)
+				strCode = Replace(strCode,vbLf,vbCr)
+				
+				Rem 预处理注释
+				Dim [注释集合]
+				re.Pattern = "((?:\x03*Rem\x03+|')[^\r]*)" '在此严重的感谢bbaa指导
+				Set [注释集合] = re.Execute(strCode)
+				strCode = re.Replace(strCode, COMMENT_FLAG)
+				
+				Rem 添加着色标签以及HTML特殊符号处理
+				With re
+					Rem 偷懒操作，用正则将符号集合替换为正则表达式，再用替换出来的正则表达式处理strCode。
+					Rem 下面三行的代码完成了 ",./\()<=>+-*&^" ==> "(\,|\.|\/|\\|\(|\)|\<|\=|\>|\+|\-|\*|\&|\^)"
+					.Pattern = ""
+					.Pattern = re.Replace([符号集合],"|\")
+					.Pattern = "(" & Left(Right(.Pattern,Len(.Pattern) - 1),Len(.Pattern) - 3) & ")"
+					strCode = .Replace(StrCode,Replace([着色标签],"|ReplaceHere|","OrangeRed"))
+				End With
+				
+				strCode = Replace(strCode,SPECIAL_CHAR_FLAG&"amp;","<span style=""color:OrangeRed;"">"&SPECIAL_CHAR_FLAG&"amp;"&"</span>")
+				strCode=Replace(strCode,SPECIAL_CHAR_FLAG&"gt;","<span style=""color:OrangeRed;"">"&SPECIAL_CHAR_FLAG&"gt;"&"</span>")
+				strCode=Replace(strCode,SPECIAL_CHAR_FLAG&"lt;","<span style=""color:OrangeRed;"">"&SPECIAL_CHAR_FLAG&"lt;"&"</span>")
+				
+				Dim [保留字]
+				For Each [保留字] In [保留字集合]
+					re.Pattern = "\b("&[保留字]&")\b"
+					strCode = re.Replace(strCode, Replace([着色标签],"|ReplaceHere|","MediumPurple"))
+				Next
+				
+				Dim [内置函数]
+				For Each [内置函数] In [内置函数集合]
+					re.Pattern = "\b("&[内置函数]&")\b"
+					strCode = re.Replace(strCode, Replace([着色标签],"|ReplaceHere|","Orange"))
+				Next
+				
+				Dim [内置常量]
+				For Each [内置常量] In [内置常量集合]
+					re.Pattern = "\b("&[内置常量]&")\b"
+					strCode = re.Replace(strCode, Replace([着色标签],"|ReplaceHere|","LightBlue"))
+				Next
+				
+				Rem 处理注释
+				Dim [注释]
+				For Each [注释] In [注释集合]
+					strCode = Replace(strCode, COMMENT_FLAG, _
+					Replace(Replace([着色标签],"|ReplaceHere|","Gray"),"$1",[注释]), 1, 1) 'or #00ff00
+				Next
+				
+				Rem 处理字符串
+				Dim [字符串]
+				For Each [字符串] In [字符串集合]
+					strCode = Replace(strCode, STRING_FLAG, _
+					Replace(Replace([着色标签],"|ReplaceHere|","LightGreen"),"$1",[字符串]), 1, 1)
+				Next
+				
+				Rem 处理换行和空字符
+				strCode = Replace(strCode,vbCr,[换行标签])
+				strCode = Replace(strCode,BLANK_FLAG,[空白字符])
+				strCode = Replace(strCode,SPECIAL_CHAR_FLAG,Chr(&H26))
+				
+				Rem 处理完成。
+				Highlight = strCode
+			End Function
+		</script>
+	</body>
+</html>
