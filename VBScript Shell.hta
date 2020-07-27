@@ -59,29 +59,7 @@
 			</div>
 		</div>
 		<script>
-			//模拟WScript对象。
-			var WScript = {
-				"CreateObject" : function(ProgID, Prefix) {
-					if(Prefix) {
-						return new ActiveXObject(ProgID, Prefix);
-					} else {
-						return new ActiveXObject(ProgID);
-					}
-				},
-				"BuildVersion" : 16384,
-				"Echo" : function(){
-					var strText;
-					if(arguments.length){
-						strText = arguments[0];
-						for(var i = 1; i < arguments.length; i++) {
-							strText+='	' + arguments[i];
-						}
-						TextOutPut(strText);
-					}
-					return;
-				}
-			}
-			var WSH = WScript;
+
 			
 			function TextOutPut(strText) {
 				var pNode = document.createElement("p");
@@ -92,13 +70,10 @@
 		<script language="VBScript">
 			Option Explicit
 			
-            Public $
-            Set $ = GetRef("document.getElementById")
-
 			Public nodeInputArea
 			Sub Window_OnLoad
 				Rem 创建InputArea的备份。
-				Set nodeInputArea = $("InputArea_0").cloneNode(True)
+				Set nodeInputArea = document.getElementById("InputArea_0").cloneNode(True)
 				
 				Rem 自动进入输入模式。
 				Call SetFocus()
