@@ -61,68 +61,23 @@
             </div>
         </div>
         <script>
-            window.FSO = new ActiveXObject('Scripting.FileSystemObject');
-            window.WS = new ActiveXObject('WScript.Shell');
-
-            //模拟WScript对象。
-            //部分摘自CrLf兄的WSH.js，在此表示感谢。
-            window.WScript = window.WSH = {
-                'Application' : oMSHTA.applicationName,
-                'CreateObject' : function (ProgID, Prefix) {
-                    if (Prefix) {
-                        return new ActiveXObject(ProgID, Prefix);
-                    } else {
-                        return new ActiveXObject(ProgID);
-                    }
-                },
-                'BuildVersion' : navigator.appVersion,
-                'Echo' : function () {
-                    var strText;
-                    if (arguments.length) {
-                        strText = arguments[0];
-                        for (var i = 1; i < arguments.length; i++) {
-                            strText += '    ' + arguments[i];
-                        }
-                        TextOutPut(strText);
-                    }
-                    return;
-                },
-                'Name' : 'HTML Application',
-                'FullName' : 'mshta.exe',
-                'ScriptName' : oMSHTA.commandLine.replace(/^(")?[^"]+[\\\/]([^\\\/\?]+?)(?:[\?#][^\\\/\?#]*)?\1.*$/, "$2"),
-                'ScriptFullName' : location.pathname,
-                'Timeout' : 0,
-                'Interactive' : 1,
-                'Quit' : window.close
-            }
-
-
-            function TextOutPut(strText) {
-                var pNode = document.createElement("p");
-                pNode.innerText = strText;
-                document.getElementById("Console").appendChild(pNode);
-            }
-
-            function JsCodeRunner(strCode) {
-                eval(strCode);
-            }
-
-            function placeCaretAtEnd(el) { //传入光标要去的jq节点对象
-                el.focus();
-                if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
-                    var range = document.createRange();
-                    range.selectNodeContents(el);
-                    range.collapse(false);
-                    var sel = window.getSelection();
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                } else if (typeof document.body.createTextRange != "undefined") {
-                    var textRange = document.body.createTextRange();
-                    textRange.moveToElementText(el);
-                    textRange.collapse(false);
-                    textRange.select();
-                }
-            }
+            var JsCodeRunner = eval;
+            //function placeCaretAtEnd(el) { //传入光标要去的jq节点对象
+            //    el.focus();
+            //    if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+            //        var range = document.createRange();
+            //        range.selectNodeContents(el);
+            //        range.collapse(false);
+            //        var sel = window.getSelection();
+            //        sel.removeAllRanges();
+            //        sel.addRange(range);
+            //    } else if (typeof document.body.createTextRange != "undefined") {
+            //        var textRange = document.body.createTextRange();
+            //        textRange.moveToElementText(el);
+            //        textRange.collapse(false);
+            //        textRange.select();
+            //    }
+            //}
         </script>
         <script language="VBScript">
             'Option Explicit
@@ -130,6 +85,10 @@
             Const ERR_MODULE_OBJECT_COLOR_NOT_FOUND = 2
             Const ERR_MODULE_COLOR_PROFILE_NOT_FOUND = 3
             Const ERR_MODULE_COLOR_PROFILE_INCORRECT = 4
+
+            Rem 加载Core。
+            Import "TextOutPut.js"
+            Import "WScript.js"
             Import "Preference.vbs"
             ReadColorProfile "Preference\DefaultColor.crp"
             Import "HighLight.vbs" '语法高亮模块
@@ -139,23 +98,32 @@
                 Dim objFileSystem
                 Set objFileSystem = CreateObject("Scripting.FileSystemObject")
                 Dim strHtaPath
-                strHtaPath = objFileSystem.GetParentFolderName(WScript.ScriptFullName)
+                strHtaPath = objFileSystem.GetParentFolderName(location.pathname)
                 
                 Rem Libraries与Core中有同名文件时，将会载入Core中的文件。
-                If objFileSystem.FileExists(strHtaPath & "\Libraries\VBScript\" & strScriptFilePath) Then
-                    strScriptFilePath = strHtaPath & "\Libraries\VBScript\" & strScriptFilePath
-                End If
-                If objFileSystem.FileExists(strHtaPath & "\Core\VBScript\" & strScriptFilePath) Then
-                    strScriptFilePath = strHtaPath & "\Core\VBScript\" & strScriptFilePath
-                End If
-                
-                If Not FSO.FileExists(strScriptFilePath) Then
-                    Err.Raise ERR_MODULE_FILE_NOT_FOUND,"库未找到","Import未找到您指定的文件。",""
-                    Exit Sub
-                End If
                 If UCase(objFileSystem.GetExtensionName(strScriptFilePath)) = "VBS" Then
+                    If objFileSystem.FileExists(strHtaPath & "\Libraries\VBScript\" & strScriptFilePath) Then
+                        strScriptFilePath = strHtaPath & "\Libraries\VBScript\" & strScriptFilePath
+                    End If
+                    If objFileSystem.FileExists(strHtaPath & "\Core\VBScript\" & strScriptFilePath) Then
+                        strScriptFilePath = strHtaPath & "\Core\VBScript\" & strScriptFilePath
+                    End If
+                    If Not objFileSystem.FileExists(strScriptFilePath) Then
+                        Err.Raise ERR_MODULE_FILE_NOT_FOUND,"库未找到","Import未找到您指定的文件",""
+                        Exit Sub
+                    End If
                     ExecuteGlobal objFileSystem.OpenTextFile(strScriptFilePath).ReadAll
                 ElseIf UCase(objFileSystem.GetExtensionName(strScriptFilePath)) = "JS" Then
+                    If objFileSystem.FileExists(strHtaPath & "\Libraries\JavaScript\" & strScriptFilePath) Then
+                        strScriptFilePath = strHtaPath & "\Libraries\JavaScript\" & strScriptFilePath
+                    End If
+                    If objFileSystem.FileExists(strHtaPath & "\Core\JavaScript\" & strScriptFilePath) Then
+                        strScriptFilePath = strHtaPath & "\Core\JavaScript\" & strScriptFilePath
+                    End If
+                    If Not objFileSystem.FileExists(strScriptFilePath) Then
+                        Err.Raise ERR_MODULE_FILE_NOT_FOUND,"库未找到","Import未找到您指定的文件",""
+                        Exit Sub
+                    End If
                     JsCodeRunner objFileSystem.OpenTextFile(strScriptFilePath).ReadAll
                 End If
 
@@ -320,6 +288,9 @@
 
           
         '载入必要的组件
+            
+            set fso=createobject("Scripting.FileSystemObject")
+            set ws=createobject("WScript.Shell")
 Dim LibFiles
 Dim CMD_Input,IsOutPut,Help_Str,str,IsConfig,InputType,PromptStr,PromptSet,ControlNum,filepath,char,RootFolder,ScriptType,ScriptName,FuncList,file,ScriptFile,IsScript,LineCount,ScriptLine,NeedExecute
 Dim Isrecv,RecvData,IsRemote'Socket变量
