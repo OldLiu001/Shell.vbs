@@ -110,9 +110,10 @@
             'Option Explicit
             Const ERR_MODULE_FILE_NOT_FOUND = 1
             Const ERR_MODULE_OBJECT_COLOR_NOT_FOUND = 2
-            Const ERR_MODULE_COLOR_PROFILE_NOT_FOUND = 2
-            Const ERR_MODULE_COLOR_PROFILE_INCORRECT = 2
+            Const ERR_MODULE_COLOR_PROFILE_NOT_FOUND = 3
+            Const ERR_MODULE_COLOR_PROFILE_INCORRECT = 4
             Import("Preference.vbs")
+            ReadColorProfile("Preference\DefaultColor.crp")
             Import("HighLight.vbs") '语法高亮模块
 
 

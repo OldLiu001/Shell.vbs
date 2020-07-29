@@ -36,6 +36,7 @@ Function ReadColorProfile(Path)
 				strColors(UBound(strColors)).Color = Mid(ColorProfileLine,InStr(ColorProfileLine,"ح") + 1 , Len(ColorProfileLine) - InStr(ColorProfileLine,"ح"))
 				strColors(UBound(strColors)).Profile = Path
 				Redim Preserve strColors(UBound(strColors) + 1)
+				Msgbox ""
 			End If
 		End If
 	Loop
