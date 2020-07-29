@@ -239,7 +239,17 @@
             
             Sub CodeRunner(strCode)
                 On Error Resume Next
-                ExecuteGlobal strCode
+                If strInputMode="MultiLineInputer" Then
+                    Dim i, intLasti
+                    For i = 1 to Len(strCode)-1
+                        If Mid(strCode,i,2) = vbCrLf Then
+                            ExecuteGlobal Mid(strCode,intLasti,i - intLasti)
+                            intLasti = i + 2
+                        End If
+                    Next
+                Else
+                    ExecuteGlobal strCode
+                End If
                 If Err.Number <> 0 Then
                     WScript.Echo "脚本错误"
                     WScript.Echo "源：    " & Err.Source 
@@ -316,7 +326,7 @@ For i=0 To UBound(filearr)
 Next
             
 
-Import("Coreutils.vbs")
+ImportVBS("Coreutils.vbs")
 
 'If WScript.Arguments.Count=1 Then
 '    
