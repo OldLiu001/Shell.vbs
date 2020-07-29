@@ -63,43 +63,43 @@ Function HighLight(strToHighlight)
 		.Pattern = ""
 		.Pattern = re.Replace([符号集合],"|\")
 		.Pattern = "(" & Left(Right(.Pattern,Len(.Pattern) - 1),Len(.Pattern) - 3) & ")"
-		strCode = .Replace(StrCode,Replace([着色标签],"|ReplaceHere|","OrangeRed"))
+		strCode = .Replace(StrCode,Replace([着色标签],"|ReplaceHere|",GetColor("typePunctuation")))
 	End With
 	
-	strCode = Replace(strCode,SPECIAL_CHAR_FLAG&"amp;","<span style=""color:OrangeRed;"">"&SPECIAL_CHAR_FLAG&"amp;"&"</span>")
+	strCode = Replace(strCode,SPECIAL_CHAR_FLAG & "amp;", "<span style=""color:OrangeRed;"">"&SPECIAL_CHAR_FLAG&"amp;"&"</span>")
 	strCode=Replace(strCode,SPECIAL_CHAR_FLAG&"gt;","<span style=""color:OrangeRed;"">"&SPECIAL_CHAR_FLAG&"gt;"&"</span>")
 	strCode=Replace(strCode,SPECIAL_CHAR_FLAG&"lt;","<span style=""color:OrangeRed;"">"&SPECIAL_CHAR_FLAG&"lt;"&"</span>")
 	
 	Dim [保留字]
 	For Each [保留字] In [保留字集合]
 		re.Pattern = "\b("&[保留字]&")\b"
-		strCode = re.Replace(strCode, Replace([着色标签],"|ReplaceHere|","MediumPurple"))
+		strCode = re.Replace(strCode, Replace([着色标签],"|ReplaceHere|",GetColor("typePreserved")))
 	Next
 	
 	Dim [内置函数]
 	For Each [内置函数] In [内置函数集合]
 		re.Pattern = "\b("&[内置函数]&")\b"
-		strCode = re.Replace(strCode, Replace([着色标签],"|ReplaceHere|","Orange"))
+		strCode = re.Replace(strCode, Replace([着色标签],"|ReplaceHere|",GetColor("typeFunction")))
 	Next
 	
 	Dim [内置常量]
 	For Each [内置常量] In [内置常量集合]
 		re.Pattern = "\b("&[内置常量]&")\b"
-		strCode = re.Replace(strCode, Replace([着色标签],"|ReplaceHere|","LightBlue"))
+		strCode = re.Replace(strCode, Replace([着色标签],"|ReplaceHere|",GetColor("typeConst")))
 	Next
 	
 	Rem 处理注释
 	Dim [注释]
 	For Each [注释] In [注释集合]
 		strCode = Replace(strCode, COMMENT_FLAG, _
-		Replace(Replace([着色标签],"|ReplaceHere|","Gray"),"$1",[注释]), 1, 1) 'or #00ff00
+		Replace(Replace([着色标签],"|ReplaceHere|",GetColor("typeComment")),"$1",[注释]), 1, 1) 'or #00ff00
 	Next
 	
 	Rem 处理字符串
 	Dim [字符串]
 	For Each [字符串] In [字符串集合]
 		strCode = Replace(strCode, STRING_FLAG, _
-		Replace(Replace([着色标签],"|ReplaceHere|","LightGreen"),"$1",[字符串]), 1, 1)
+		Replace(Replace([着色标签],"|ReplaceHere|",GetColor("typeString")),"$1",[字符串]), 1, 1)
 	Next
 	
 	Rem 处理换行和空字符
@@ -110,3 +110,4 @@ Function HighLight(strToHighlight)
 	Rem 处理完成。
 	Highlight = strCode
 End Function
+
