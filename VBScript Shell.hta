@@ -1,6 +1,7 @@
 <html lang="zh_CN">
 	<head>
 		<title>Visual Basic Script Shell</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 		<HTA:APPLICATION
 			APPLICATIONNAME="VBScript Shell"
 			ID="oMSHTA"
@@ -14,10 +15,10 @@
 				border: 0;
 				padding: 0;
 				
-				/*×Ô¶¯¹ö¶¯ÌõÏÔÊ¾*/
+				/*è‡ªåŠ¨æ»šåŠ¨æ¡æ˜¾ç¤º*/
 				overflow-y: auto;
 				overflow-x: auto;
-				/*×Ô¶¯»»ĞĞ*/
+				/*è‡ªåŠ¨æ¢è¡Œ*/
 			    word-wrap: break-word;
     			word-break: break-all;
 			}
@@ -49,7 +50,7 @@
 				VBScript Shell
 			</span>
             &emsp; Version: 0.4 beta
-            <p>Copyright 2020 OldLiu TECH_N00b Ğ¡·ÊÑò</p>
+            <p>Copyright 2020 OldLiu TECH_N00b å°è‚¥ç¾Š</p>
 			<div Id="InputArea_0">
 				<span style="color: LightGreen;">
 					VBScript
@@ -63,7 +64,7 @@
 		    window.FSO = new ActiveXObject('Scripting.FileSystemObject');
 		    window.WS = new ActiveXObject('WScript.Shell');
 
-		    //Ä£ÄâWScript¶ÔÏó¡£
+		    //æ¨¡æ‹ŸWScriptå¯¹è±¡ã€‚
 		    window.WScript = window.WSH = {
 		        'Application' : oMSHTA.applicationName,
 		        'CreateObject' : function (ProgID, Prefix) {
@@ -108,72 +109,72 @@
 			
 			Public nodeInputArea
 			Sub Window_OnLoad
-				Rem ´´½¨InputAreaµÄ±¸·İ¡£
+				Rem åˆ›å»ºInputAreaçš„å¤‡ä»½ã€‚
 				Set nodeInputArea = document.getElementById("InputArea_0").cloneNode(True)
 				
-				Rem ×Ô¶¯½øÈëÊäÈëÄ£Ê½¡£
+				Rem è‡ªåŠ¨è¿›å…¥è¾“å…¥æ¨¡å¼ã€‚
 				Call SetFocus()
 			End Sub
 			
-			Rem CodeInputer ID¶¯Ì¬·µ»Ø¡£
+			Rem CodeInputer IDåŠ¨æ€è¿”å›ã€‚
 			Public lngInputerIndex
 			lngInputerIndex = 0
 			Public strInputMode
-			strInputMode = "SingleLineInputer" 'Ä¬ÈÏÎªµ¥ĞĞ´úÂëÊäÈëÄ£Ê½
+			strInputMode = "SingleLineInputer" 'é»˜è®¤ä¸ºå•è¡Œä»£ç è¾“å…¥æ¨¡å¼
 			Function InputerID()
 				InputerID = strInputMode & "_" & CStr(lngInputerIndex)
 			End Function
 			
-			Rem µã»÷Ò³ÃæÊ±×Ô¶¯ÈÃCodeInputer»ñµÃ½¹µã¡£
+			Rem ç‚¹å‡»é¡µé¢æ—¶è‡ªåŠ¨è®©CodeInputerè·å¾—ç„¦ç‚¹ã€‚
 			Sub SetFocus()
 				With document
-					If .selection.createRange().text = "" Then 'Î´Ñ¡ÖĞÎÄ×ÖÊ±
+					If .selection.createRange().text = "" Then 'æœªé€‰ä¸­æ–‡å­—æ—¶
 						Call .getElementById(InputerID()).Focus
 					End If
 				End With
 			End Sub
 			
-			Rem °´¼ü´¦Àí¡£
+			Rem æŒ‰é”®å¤„ç†ã€‚
 			Public strSavedCode
 			Function OnKeyPress()
 				With document.getElementById(InputerID())
-					Rem °´¼üºó½øĞĞ¸ßÁÁ´¦Àí¡£
+					Rem æŒ‰é”®åè¿›è¡Œé«˜äº®å¤„ç†ã€‚
 					If strSavedCode <> .innerText Then
 						.innerHTML = Highlight(.innerText)
 						strSavedCode = .innerText
 					End If
 					
-					Rem ´¦ÀíÌØÊâ°´¼ü¡£
+					Rem å¤„ç†ç‰¹æ®ŠæŒ‰é”®ã€‚
 					'WScript.echo window.event.keyCode
 					Select Case window.event.keyCode
 						Case 13 'Enter
 							If strInputMode = "SingleLineInputer" Then
 								If .innerText = "" Then
-									Rem µ¥ĞĞÊäÈëÎª¿Õ²¢»Ø³µ£¬ÇĞ»»Îª¶àĞĞ´úÂëÊäÈëÄ£Ê½¡£
+									Rem å•è¡Œè¾“å…¥ä¸ºç©ºå¹¶å›è½¦ï¼Œåˆ‡æ¢ä¸ºå¤šè¡Œä»£ç è¾“å…¥æ¨¡å¼ã€‚
 									.setAttribute "contentEditable", "False"
 									strInputMode = "MultiLineInputer"
 									document.getElementById _
 										(InputerID()).setAttribute _
 										"contentEditable", "True"
 									Call SetFocus
-									window.event.keyCode = 0 '×è¶Ï°´¼ü¡£
+									window.event.keyCode = 0 'é˜»æ–­æŒ‰é”®ã€‚
 									OnKeyPress = False
 									Exit Function
 								Else 
-									Rem È¥µôMultiLineCodeInputer£¬È¥µô¿ÕĞĞ¡£
+									Rem å»æ‰MultiLineCodeInputerï¼Œå»æ‰ç©ºè¡Œã€‚
 									document.getElementById _
 										("MultiLineInputer_" & CStr(lngInputerIndex)).parentNode.removeChild _
 										(document.getElementById("MultiLineInputer_" & CStr(lngInputerIndex)))
 									
-									Rem Ö´ĞĞµ¥ĞĞÊäÈë´úÂë¡£
+									Rem æ‰§è¡Œå•è¡Œè¾“å…¥ä»£ç ã€‚
 									CodeRunner .innerText
-									.setAttribute "contentEditable", "False" '¹Ø±Õ´úÂëÊäÈë¹¦ÄÜ
+									.setAttribute "contentEditable", "False" 'å…³é—­ä»£ç è¾“å…¥åŠŸèƒ½
 									window.event.keyCode = 0
 									OnKeyPress = False
 								End If
 							End If
 						Case 10 'Ctrl+Enter
-							If strInputMode = "MultiLineInputer" Then 'Ö»ÔÚ¶àĞĞ´úÂëÊäÈëÄ£Ê½Ê±ÏìÓ¦
+							If strInputMode = "MultiLineInputer" Then 'åªåœ¨å¤šè¡Œä»£ç è¾“å…¥æ¨¡å¼æ—¶å“åº”
 								CodeRunner .innerText
 								window.event.keyCode = 0
 								.setAttribute "contentEditable", "False"
@@ -188,18 +189,18 @@
 				On Error Resume Next
 				ExecuteGlobal strCode
 				If Err.Number <> 0 Then
-					WScript.Echo "½Å±¾´íÎó"
-					WScript.Echo "Ô´£º    " & Err.Source 
-					WScript.Echo "ÃèÊö£º  " & Err.Description
-					WScript.Echo "´úÂë£º  " & CStr(Err.Number)
-					WScript.Echo("½öÖ§³Övbscript¡£Äú¿ÉÒÔ£º")
-					WScript.Echo("  1.ÔÚËÑË÷ÒıÇæËÑË÷¡°" & Err.Description & "¡±")
-					WScript.Echo("  2.ÊäÈë¡±About¡°ÒÔÁªÏµ¿ª·¢Õß¡£")
+					WScript.Echo "è„šæœ¬é”™è¯¯"
+					WScript.Echo "æºï¼š    " & Err.Source 
+					WScript.Echo "æè¿°ï¼š  " & Err.Description
+					WScript.Echo "ä»£ç ï¼š  " & CStr(Err.Number)
+					WScript.Echo("ä»…æ”¯æŒvbscriptã€‚æ‚¨å¯ä»¥ï¼š")
+					WScript.Echo("  1.åœ¨æœç´¢å¼•æ“æœç´¢â€œ" & Err.Description & "â€")
+					WScript.Echo("  2.è¾“å…¥â€Aboutâ€œä»¥è”ç³»å¼€å‘è€…ã€‚")
 					Err.Clear
 				End If
 				On Error Goto 0
 				
-				Rem ¸øConsole×·¼ÓĞÂµÄInputArea¡£
+				Rem ç»™Consoleè¿½åŠ æ–°çš„InputAreaã€‚
 				lngInputerIndex = lngInputerIndex + 1
 				nodeInputArea.setAttribute "id", "InputArea_" & CStr(lngInputerIndex)
 				nodeInputArea.getElementsByTagName("span")(1).setAttribute _
@@ -208,11 +209,11 @@
 					"id", "MultiLineInputer_" & CStr(lngInputerIndex)
 				document.getElementById("Console").appendChild nodeInputArea
 				
-				Rem ±¸·İInputArea¡£
+				Rem å¤‡ä»½InputAreaã€‚
 				Set nodeInputArea = document.getElementById _
 					("InputArea_" & CStr(lngInputerIndex)).cloneNode(True)
 				
-				Rem »¹Ô­ÊäÈëÄ£Ê½¡£
+				Rem è¿˜åŸè¾“å…¥æ¨¡å¼ã€‚
 				strInputMode = "SingleLineInputer"
 				Call SetFocus
 			End Sub
@@ -222,115 +223,115 @@
 
 
             Function HighLight(strToHighlight)
-				Rem Vbs¸ßÁÁº¯Êı£¬ÀÏÁõ±àĞ´¡£
+				Rem Vbsé«˜äº®å‡½æ•°ï¼Œè€åˆ˜ç¼–å†™ã€‚
 				Rem http://www.bathome.net/thread-47323-1-1.html
-				Rem HTMLÌØÊâ×Ö·û¼°±êÇ©´¦Àí¸ĞĞ»bbaa¡£
-				Rem Áé¸Ğ From Demon's Vbs-Beautifier
+				Rem HTMLç‰¹æ®Šå­—ç¬¦åŠæ ‡ç­¾å¤„ç†æ„Ÿè°¢bbaaã€‚
+				Rem çµæ„Ÿ From Demon's Vbs-Beautifier
 				
-				Rem ³£Á¿ÉèÖÃ
+				Rem å¸¸é‡è®¾ç½®
 				Dim STRING_FLAG,COMMENT_FLAG,BLANK_FLAG,SPECIAL_CHAR_FLAG
-				Dim [·ûºÅ¼¯ºÏ],[±£Áô×Ö¼¯ºÏ],[ÄÚÖÃº¯Êı¼¯ºÏ],[ÄÚÖÃ³£Á¿¼¯ºÏ]
+				Dim [ç¬¦å·é›†åˆ],[ä¿ç•™å­—é›†åˆ],[å†…ç½®å‡½æ•°é›†åˆ],[å†…ç½®å¸¸é‡é›†åˆ]
 				STRING_FLAG = Chr(1)
 				COMMENT_FLAG = Chr(2)
 				BLANK_FLAG = Chr(3)
 				SPECIAL_CHAR_FLAG = Chr(4)
-				[·ûºÅ¼¯ºÏ] = ",./\()<=>+-*^&"
-				[±£Áô×Ö¼¯ºÏ] = Split("And As Boolean ByRef Byte ByVal Call Case Class Const Currency Debug Dim Do Double Each Else ElseIf Empty End EndIf Enum Eqv Event Exit Explicit False For Function Get Goto If Imp Implements In Integer Is Let Like Long Loop LSet Me Mod New Next Not Nothing Null On Option Optional Or ParamArray Preserve Private Property Public RaiseEvent ReDim Resume RSet Select Set Shared Single Static Stop Sub Then To True Type TypeOf Until Variant WEnd While With Xor"," ")
-				[ÄÚÖÃº¯Êı¼¯ºÏ] = Split("Abs Array Asc Atn CBool CByte CCur CDate CDbl CInt CLng CSng CStr Chr Cos CreateObject Date DateAdd DateDiff DatePart DateSerial DateValue Day Escape Eval Exp Filter Fix FormatCurrency FormatDateTime FormatNumber FormatPercent GetLocale GetObject GetRef Hex Hour InStr InStrRev InputBox Int IsArray IsDate IsEmpty IsNull IsNumeric IsObject Join LBound LCase LTrim Left Len LoadPicture Log Mid Minute Month MonthName MsgBox Now Oct Randomize RGB RTrim Replace Right Rnd Round ScriptEngine ScriptEngineBuildVersion ScriptEngineMajorVersion ScriptEngineMinorVersion Second SetLocale Sgn Sin Space Split Sqr StrComp StrReverse String Tan Time TimeSerial TimeValue Timer Trim TypeName UBound UCase Unescape VarType Weekday WeekdayName Year"," ")
-				[ÄÚÖÃ³£Á¿¼¯ºÏ] = Split("vbBlack vbRed vbGreen vbYellow vbBlue vbMagenta vbCyan vbWhite vbBinaryCompare vbTextCompare vbSunday vbMonday vbTuesday vbWednesday vbThursday vbFriday vbSaturday vbUseSystemDayOfWeek vbFirstJan1 vbFirstFourDays vbFirstFullWeek vbGeneralDate vbLongDate vbShortDate vbLongTime vbShortTime vbObjectError vbOKOnly vbOKCancel vbAbortRetryIgnore vbYesNoCancel vbYesNo vbRetryCancel vbCritical vbQuestion vbExclamation vbInformation vbDefaultButton1 vbDefaultButton2 vbDefaultButton3 vbDefaultButton4 vbApplicationModal vbSystemModal vbOK vbCancel vbAbort vbRetry vbIgnore vbYes vbNo vbCr vbCrLf vbFormFeed vbLf vbNewLine vbNullChar vbNullString vbTab vbVerticalTab vbUseDefault vbTrue vbFalse vbEmpty vbNull vbInteger vbLong vbSingle vbDouble vbCurrency vbDate vbString vbObject vbError vbBoolean vbVariant vbDataObject vbDecimal vbByte vbArray WScript Wsh"," ")
+				[ç¬¦å·é›†åˆ] = ",./\()<=>+-*^&"
+				[ä¿ç•™å­—é›†åˆ] = Split("And As Boolean ByRef Byte ByVal Call Case Class Const Currency Debug Dim Do Double Each Else ElseIf Empty End EndIf Enum Eqv Event Exit Explicit False For Function Get Goto If Imp Implements In Integer Is Let Like Long Loop LSet Me Mod New Next Not Nothing Null On Option Optional Or ParamArray Preserve Private Property Public RaiseEvent ReDim Resume RSet Select Set Shared Single Static Stop Sub Then To True Type TypeOf Until Variant WEnd While With Xor"," ")
+				[å†…ç½®å‡½æ•°é›†åˆ] = Split("Abs Array Asc Atn CBool CByte CCur CDate CDbl CInt CLng CSng CStr Chr Cos CreateObject Date DateAdd DateDiff DatePart DateSerial DateValue Day Escape Eval Exp Filter Fix FormatCurrency FormatDateTime FormatNumber FormatPercent GetLocale GetObject GetRef Hex Hour InStr InStrRev InputBox Int IsArray IsDate IsEmpty IsNull IsNumeric IsObject Join LBound LCase LTrim Left Len LoadPicture Log Mid Minute Month MonthName MsgBox Now Oct Randomize RGB RTrim Replace Right Rnd Round ScriptEngine ScriptEngineBuildVersion ScriptEngineMajorVersion ScriptEngineMinorVersion Second SetLocale Sgn Sin Space Split Sqr StrComp StrReverse String Tan Time TimeSerial TimeValue Timer Trim TypeName UBound UCase Unescape VarType Weekday WeekdayName Year"," ")
+				[å†…ç½®å¸¸é‡é›†åˆ] = Split("vbBlack vbRed vbGreen vbYellow vbBlue vbMagenta vbCyan vbWhite vbBinaryCompare vbTextCompare vbSunday vbMonday vbTuesday vbWednesday vbThursday vbFriday vbSaturday vbUseSystemDayOfWeek vbFirstJan1 vbFirstFourDays vbFirstFullWeek vbGeneralDate vbLongDate vbShortDate vbLongTime vbShortTime vbObjectError vbOKOnly vbOKCancel vbAbortRetryIgnore vbYesNoCancel vbYesNo vbRetryCancel vbCritical vbQuestion vbExclamation vbInformation vbDefaultButton1 vbDefaultButton2 vbDefaultButton3 vbDefaultButton4 vbApplicationModal vbSystemModal vbOK vbCancel vbAbort vbRetry vbIgnore vbYes vbNo vbCr vbCrLf vbFormFeed vbLf vbNewLine vbNullChar vbNullString vbTab vbVerticalTab vbUseDefault vbTrue vbFalse vbEmpty vbNull vbInteger vbLong vbSingle vbDouble vbCurrency vbDate vbString vbObject vbError vbBoolean vbVariant vbDataObject vbDecimal vbByte vbArray WScript Wsh"," ")
 				
-				Rem ÕıÔò¶ÔÏó³õÊ¼»¯
+				Rem æ­£åˆ™å¯¹è±¡åˆå§‹åŒ–
 				Dim re
 				Set re = New RegExp
 				re.Global = True
 				re.IgnoreCase = True
 				re.MultiLine = False
 				
-				Rem ¶ÁÈ¡´úÂë
+				Rem è¯»å–ä»£ç 
 				Dim strCode
 				strCode = strToHighlight
 				
-				Rem HTMLÌØÊâ·ûºÅÔ¤´¦Àí
-				Dim [×ÅÉ«±êÇ©],[»»ĞĞ±êÇ©],[¿Õ°××Ö·û]
-				[×ÅÉ«±êÇ©] = "<span style=""color:|ReplaceHere|;"">$1</span>"
-				[»»ĞĞ±êÇ©] = "<br>"
-				[¿Õ°××Ö·û] = "&nbsp;"
+				Rem HTMLç‰¹æ®Šç¬¦å·é¢„å¤„ç†
+				Dim [ç€è‰²æ ‡ç­¾],[æ¢è¡Œæ ‡ç­¾],[ç©ºç™½å­—ç¬¦]
+				[ç€è‰²æ ‡ç­¾] = "<span style=""color:|ReplaceHere|;"">$1</span>"
+				[æ¢è¡Œæ ‡ç­¾] = "<br>"
+				[ç©ºç™½å­—ç¬¦] = "&nbsp;"
 				strCode = Replace(strCode,"&",SPECIAL_CHAR_FLAG&"amp;")
 				strCode = Replace(strCode,">",SPECIAL_CHAR_FLAG&"gt;")
 				strCode = Replace(strCode,"<",SPECIAL_CHAR_FLAG&"lt;")
 				
-				Rem Ô¤´¦Àí×Ö·û´®
-				Dim [×Ö·û´®¼¯ºÏ]
+				Rem é¢„å¤„ç†å­—ç¬¦ä¸²
+				Dim [å­—ç¬¦ä¸²é›†åˆ]
 				re.Pattern = """.*?"""
-				Set [×Ö·û´®¼¯ºÏ] = re.Execute(strCode)
+				Set [å­—ç¬¦ä¸²é›†åˆ] = re.Execute(strCode)
 				strCode = re.Replace(strCode, STRING_FLAG)
 				
-				Rem Ô¤´¦Àí¿Õ×Ö·û
+				Rem é¢„å¤„ç†ç©ºå­—ç¬¦
 				strCode = Replace(strCode,Chr(9),"    ")
 				strCode = Replace(strCode," ",BLANK_FLAG)
 				
-				Rem Ô¤´¦Àí»»ĞĞ
+				Rem é¢„å¤„ç†æ¢è¡Œ
 				strCode = Replace(strCode,vbNewLine,vbCr)
 				strCode = Replace(strCode,vbLf,vbCr)
 				
-				Rem Ô¤´¦Àí×¢ÊÍ
-				Dim [×¢ÊÍ¼¯ºÏ]
-				re.Pattern = "((?:\x03*Rem\x03+|')[^\r]*)" 'ÔÚ´ËÑÏÖØµÄ¸ĞĞ»bbaaÖ¸µ¼
-				Set [×¢ÊÍ¼¯ºÏ] = re.Execute(strCode)
+				Rem é¢„å¤„ç†æ³¨é‡Š
+				Dim [æ³¨é‡Šé›†åˆ]
+				re.Pattern = "((?:\x03*Rem\x03+|')[^\r]*)" 'åœ¨æ­¤ä¸¥é‡çš„æ„Ÿè°¢bbaaæŒ‡å¯¼
+				Set [æ³¨é‡Šé›†åˆ] = re.Execute(strCode)
 				strCode = re.Replace(strCode, COMMENT_FLAG)
 				
-				Rem Ìí¼Ó×ÅÉ«±êÇ©ÒÔ¼°HTMLÌØÊâ·ûºÅ´¦Àí
+				Rem æ·»åŠ ç€è‰²æ ‡ç­¾ä»¥åŠHTMLç‰¹æ®Šç¬¦å·å¤„ç†
 				With re
-					Rem ÍµÀÁ²Ù×÷£¬ÓÃÕıÔò½«·ûºÅ¼¯ºÏÌæ»»ÎªÕıÔò±í´ïÊ½£¬ÔÙÓÃÌæ»»³öÀ´µÄÕıÔò±í´ïÊ½´¦ÀístrCode¡£
-					Rem ÏÂÃæÈıĞĞµÄ´úÂëÍê³ÉÁË ",./\()<=>+-*&^" ==> "(\,|\.|\/|\\|\(|\)|\<|\=|\>|\+|\-|\*|\&|\^)"
+					Rem å·æ‡’æ“ä½œï¼Œç”¨æ­£åˆ™å°†ç¬¦å·é›†åˆæ›¿æ¢ä¸ºæ­£åˆ™è¡¨è¾¾å¼ï¼Œå†ç”¨æ›¿æ¢å‡ºæ¥çš„æ­£åˆ™è¡¨è¾¾å¼å¤„ç†strCodeã€‚
+					Rem ä¸‹é¢ä¸‰è¡Œçš„ä»£ç å®Œæˆäº† ",./\()<=>+-*&^" ==> "(\,|\.|\/|\\|\(|\)|\<|\=|\>|\+|\-|\*|\&|\^)"
 					.Pattern = ""
-					.Pattern = re.Replace([·ûºÅ¼¯ºÏ],"|\")
+					.Pattern = re.Replace([ç¬¦å·é›†åˆ],"|\")
 					.Pattern = "(" & Left(Right(.Pattern,Len(.Pattern) - 1),Len(.Pattern) - 3) & ")"
-					strCode = .Replace(StrCode,Replace([×ÅÉ«±êÇ©],"|ReplaceHere|","OrangeRed"))
+					strCode = .Replace(StrCode,Replace([ç€è‰²æ ‡ç­¾],"|ReplaceHere|","OrangeRed"))
 				End With
 				
 				strCode = Replace(strCode,SPECIAL_CHAR_FLAG&"amp;","<span style=""color:OrangeRed;"">"&SPECIAL_CHAR_FLAG&"amp;"&"</span>")
 				strCode=Replace(strCode,SPECIAL_CHAR_FLAG&"gt;","<span style=""color:OrangeRed;"">"&SPECIAL_CHAR_FLAG&"gt;"&"</span>")
 				strCode=Replace(strCode,SPECIAL_CHAR_FLAG&"lt;","<span style=""color:OrangeRed;"">"&SPECIAL_CHAR_FLAG&"lt;"&"</span>")
 				
-				Dim [±£Áô×Ö]
-				For Each [±£Áô×Ö] In [±£Áô×Ö¼¯ºÏ]
-					re.Pattern = "\b("&[±£Áô×Ö]&")\b"
-					strCode = re.Replace(strCode, Replace([×ÅÉ«±êÇ©],"|ReplaceHere|","MediumPurple"))
+				Dim [ä¿ç•™å­—]
+				For Each [ä¿ç•™å­—] In [ä¿ç•™å­—é›†åˆ]
+					re.Pattern = "\b("&[ä¿ç•™å­—]&")\b"
+					strCode = re.Replace(strCode, Replace([ç€è‰²æ ‡ç­¾],"|ReplaceHere|","MediumPurple"))
 				Next
 				
-				Dim [ÄÚÖÃº¯Êı]
-				For Each [ÄÚÖÃº¯Êı] In [ÄÚÖÃº¯Êı¼¯ºÏ]
-					re.Pattern = "\b("&[ÄÚÖÃº¯Êı]&")\b"
-					strCode = re.Replace(strCode, Replace([×ÅÉ«±êÇ©],"|ReplaceHere|","Orange"))
+				Dim [å†…ç½®å‡½æ•°]
+				For Each [å†…ç½®å‡½æ•°] In [å†…ç½®å‡½æ•°é›†åˆ]
+					re.Pattern = "\b("&[å†…ç½®å‡½æ•°]&")\b"
+					strCode = re.Replace(strCode, Replace([ç€è‰²æ ‡ç­¾],"|ReplaceHere|","Orange"))
 				Next
 				
-				Dim [ÄÚÖÃ³£Á¿]
-				For Each [ÄÚÖÃ³£Á¿] In [ÄÚÖÃ³£Á¿¼¯ºÏ]
-					re.Pattern = "\b("&[ÄÚÖÃ³£Á¿]&")\b"
-					strCode = re.Replace(strCode, Replace([×ÅÉ«±êÇ©],"|ReplaceHere|","LightBlue"))
+				Dim [å†…ç½®å¸¸é‡]
+				For Each [å†…ç½®å¸¸é‡] In [å†…ç½®å¸¸é‡é›†åˆ]
+					re.Pattern = "\b("&[å†…ç½®å¸¸é‡]&")\b"
+					strCode = re.Replace(strCode, Replace([ç€è‰²æ ‡ç­¾],"|ReplaceHere|","LightBlue"))
 				Next
 				
-				Rem ´¦Àí×¢ÊÍ
-				Dim [×¢ÊÍ]
-				For Each [×¢ÊÍ] In [×¢ÊÍ¼¯ºÏ]
+				Rem å¤„ç†æ³¨é‡Š
+				Dim [æ³¨é‡Š]
+				For Each [æ³¨é‡Š] In [æ³¨é‡Šé›†åˆ]
 					strCode = Replace(strCode, COMMENT_FLAG, _
-					Replace(Replace([×ÅÉ«±êÇ©],"|ReplaceHere|","Gray"),"$1",[×¢ÊÍ]), 1, 1) 'or #00ff00
+					Replace(Replace([ç€è‰²æ ‡ç­¾],"|ReplaceHere|","Gray"),"$1",[æ³¨é‡Š]), 1, 1) 'or #00ff00
 				Next
 				
-				Rem ´¦Àí×Ö·û´®
-				Dim [×Ö·û´®]
-				For Each [×Ö·û´®] In [×Ö·û´®¼¯ºÏ]
+				Rem å¤„ç†å­—ç¬¦ä¸²
+				Dim [å­—ç¬¦ä¸²]
+				For Each [å­—ç¬¦ä¸²] In [å­—ç¬¦ä¸²é›†åˆ]
 					strCode = Replace(strCode, STRING_FLAG, _
-					Replace(Replace([×ÅÉ«±êÇ©],"|ReplaceHere|","LightGreen"),"$1",[×Ö·û´®]), 1, 1)
+					Replace(Replace([ç€è‰²æ ‡ç­¾],"|ReplaceHere|","LightGreen"),"$1",[å­—ç¬¦ä¸²]), 1, 1)
 				Next
 				
-				Rem ´¦Àí»»ĞĞºÍ¿Õ×Ö·û
-				strCode = Replace(strCode,vbCr,[»»ĞĞ±êÇ©])
-				strCode = Replace(strCode,BLANK_FLAG,[¿Õ°××Ö·û])
+				Rem å¤„ç†æ¢è¡Œå’Œç©ºå­—ç¬¦
+				strCode = Replace(strCode,vbCr,[æ¢è¡Œæ ‡ç­¾])
+				strCode = Replace(strCode,BLANK_FLAG,[ç©ºç™½å­—ç¬¦])
 				strCode = Replace(strCode,SPECIAL_CHAR_FLAG,Chr(&H26))
 				
-				Rem ´¦ÀíÍê³É¡£
+				Rem å¤„ç†å®Œæˆã€‚
 				Highlight = strCode
 			End Function
 
@@ -347,19 +348,19 @@
 
 
 
-'ÒÔÏÂÎªĞÂºÏ²¢ÄÚÈİ£¬´ıÕûÀí
+'ä»¥ä¸‹ä¸ºæ–°åˆå¹¶å†…å®¹ï¼Œå¾…æ•´ç†
 
           
-        'ÔØÈë±ØÒªµÄ×é¼ş
+        'è½½å…¥å¿…è¦çš„ç»„ä»¶
 Dim LibFiles
 Dim CMD_Input,IsOutPut,Help_Str,str,IsConfig,InputType,PromptStr,PromptSet,ControlNum,filepath,char,RootFolder,ScriptType,ScriptName,FuncList,file,ScriptFile,IsScript,LineCount,ScriptLine,NeedExecute
-Dim Isrecv,RecvData,IsRemote'Socket±äÁ¿
+Dim Isrecv,RecvData,IsRemote'Socketå˜é‡
 IsOutPut=True
 IsConfig=True
 InputType=1
 CMD_Input="'"
 ControlNum=0
-CurrentDirectory=ws.CurrentDirectory'ÆÕÍ¨±äÁ¿³õÊ¼»¯
+CurrentDirectory=ws.CurrentDirectory'æ™®é€šå˜é‡åˆå§‹åŒ–
 
 Execute("Public Const Desktop= """&WS.ExpandEnvironmentStrings("%UserProFile%\Desktop")&Chr(34))
 Execute("Public Const WinDir="""&WS.ExpandEnvironmentStrings("%Windir%")&Chr(34))
@@ -370,10 +371,10 @@ Execute("Public Const ComLib="""&WS.ExpandEnvironmentStrings("%VBSH_Dll%")&Chr(3
 Dim rIsUAC:rIsUAC=IsUAC
 
 
-'³õÊ¼»¯¾²Ì¬±äÁ¿
+'åˆå§‹åŒ–é™æ€å˜é‡
 Public Const NL=Null
 Public Const BK=1
-Public Const RT=2'ÖØÒªµÄ±äÁ¿³õÊ¼»¯
+Public Const RT=2'é‡è¦çš„å˜é‡åˆå§‹åŒ–
 Public Const KB=1024
 Public Const MB=1048576
 Public Const GB=1073741824
@@ -382,9 +383,9 @@ Public Const TB=1099511627776
 Public Const VersionNum="0016"
 Public Const VersionName="1.0.0.16"
 Public Const ProductName="VBS Shell"
-Public Const LastVersiondTime="202005142100" '°æ±¾ºÍ²úÆ·ĞÅÏ¢
-'¸Ã°æ±¾Ê¹ÓÃCScript½âÊÍÆ÷ÔËĞĞ¡£
-filearr=Split(ReadAll(WScript.ScriptFullName),vbCrLf)'³õÊ¼»¯¶¯Ì¬±äÁ¿
+Public Const LastVersiondTime="202005142100" 'ç‰ˆæœ¬å’Œäº§å“ä¿¡æ¯
+'è¯¥ç‰ˆæœ¬ä½¿ç”¨CScriptè§£é‡Šå™¨è¿è¡Œã€‚
+filearr=Split(ReadAll(WScript.ScriptFullName),vbCrLf)'åˆå§‹åŒ–åŠ¨æ€å˜é‡
 For i=0 To UBound(filearr)
 		If LCase(Trim(Left(filearr(i),9)))="function"Or LCase(Trim(Left(filearr(i),3)))="sub" Then
 			Help_Str=Help_Str&filearr(i)&vbCrLf
@@ -412,9 +413,9 @@ Import("Coreutils.vbs")
 'End If 
 
 'If IsScript<>True And Islogo=True Then
-'	WSH.Echo ProductName&" [°æ±¾ " & VersionName & "]"    ÒÑÇ¨ÒÆ
-'	WScript.Echo("ÄÚ²¿°æ±¾ "& VersionNum)
-'	WScript.Echo("°æÈ¨ËùÓĞ " & Chr(60) + Chr(99) + Chr(62) & " 2019 " + "TECH_N00b&Ğ¡·ÊÑò¡£" + Chr(32) + "±£ÁôËùÓĞÈ¨Àû¡£")
+'	WSH.Echo ProductName&" [ç‰ˆæœ¬ " & VersionName & "]"    å·²è¿ç§»
+'	WScript.Echo("å†…éƒ¨ç‰ˆæœ¬ "& VersionNum)
+'	WScript.Echo("ç‰ˆæƒæ‰€æœ‰ " & Chr(60) + Chr(99) + Chr(62) & " 2019 " + "TECH_N00b&å°è‚¥ç¾Šã€‚" + Chr(32) + "ä¿ç•™æ‰€æœ‰æƒåˆ©ã€‚")
 '	WScript.Echo("")
 'End If
 
@@ -493,11 +494,11 @@ Import("Coreutils.vbs")
 '		CMD_Input=Null
 '		Code=Null
 '		If Err.Number<>0 Then 
-'			WSH.Echo("´íÎó:" & Err.Number)
+'			WSH.Echo("é”™è¯¯:" & Err.Number)
 '			WScript.Echo(Err.Description)
-'			WScript.Echo("½öÖ§³Övbscript¡£Äú¿ÉÒÔ£º")
-'			WScript.Echo("  1.ÔÚËÑË÷ÒıÇæËÑË÷¡°" & Err.Description & "¡±")
-'			WScript.Echo("  2.ÊäÈë¡±About¡°ÒÔÁªÏµ¿ª·¢Õß¡£")
+'			WScript.Echo("ä»…æ”¯æŒvbscriptã€‚æ‚¨å¯ä»¥ï¼š")
+'			WScript.Echo("  1.åœ¨æœç´¢å¼•æ“æœç´¢â€œ" & Err.Description & "â€")
+'			WScript.Echo("  2.è¾“å…¥â€Aboutâ€œä»¥è”ç³»å¼€å‘è€…ã€‚")
 '		End If
 '		On Error Goto 0
 '		'----------------------------------------execute part end -----------------------------------------------------------------------------
@@ -519,13 +520,13 @@ Import("Coreutils.vbs")
 				WS.Run "%windir%\system32\Cscript //nologo "&WScript.ScriptFullName 
 			End Function
 
-			Sub GetCommand()'ÁĞ³öËùÓĞÃüÁî
-				WScript.Echo(Help_Str)'Õâ¸ö±äÁ¿´¢´æÃüÁîËµÃ÷
+			Sub GetCommand()'åˆ—å‡ºæ‰€æœ‰å‘½ä»¤
+				WScript.Echo(Help_Str)'è¿™ä¸ªå˜é‡å‚¨å­˜å‘½ä»¤è¯´æ˜
 			End Sub
 
 			Sub GetHelp(ByVal FuncStr)
 				If InStr(FuncStr,"function")Or InStr(FuncStr,"sub")Then
-					WSH.Echo("²»Ó¦ÓĞ'sub'»òÕß'function'ÔÚ²éÑ¯×Ö·ûÖĞ¡£")
+					WSH.Echo("ä¸åº”æœ‰'sub'æˆ–è€…'function'åœ¨æŸ¥è¯¢å­—ç¬¦ä¸­ã€‚")
 					Exit Sub
 				End If
 
@@ -575,15 +576,15 @@ Import("Coreutils.vbs")
 
 			Sub ErrorDealing()
 				If Err.Number <> 0 Then 
-					WScript.Echo "´íÎó£º" & Err.Number
+					WScript.Echo "é”™è¯¯ï¼š" & Err.Number
 					WScript.Echo Err.Description
 					Select Case Err.Number
 						Case 62  
-						WScript.Echo "Õâ¿ÉÄÜÊÇÄú´íÎó°´ÏÂCtrl+ZÒıÆğµÄ¡£"
+						WScript.Echo "è¿™å¯èƒ½æ˜¯æ‚¨é”™è¯¯æŒ‰ä¸‹Ctrl+Zå¼•èµ·çš„ã€‚"
 					Case Else
-						WScript.Echo("½öÖ§³Övbscript¡£Äú¿ÉÒÔ£º")
-						WScript.Echo("  1.ÔÚËÑË÷ÒıÇæËÑË÷¡°" & Err.Description & "¡±")
-						WScript.Echo("  2.ÊäÈë¡±About¡°ÒÔÁªÏµ¿ª·¢Õß¡£")
+						WScript.Echo("ä»…æ”¯æŒvbscriptã€‚æ‚¨å¯ä»¥ï¼š")
+						WScript.Echo("  1.åœ¨æœç´¢å¼•æ“æœç´¢â€œ" & Err.Description & "â€")
+						WScript.Echo("  2.è¾“å…¥â€Aboutâ€œä»¥è”ç³»å¼€å‘è€…ã€‚")
 					End Select
 					ExecuteGlobal("input=Null")
 				End If
@@ -638,25 +639,25 @@ Import("Coreutils.vbs")
 			End Sub 
 
 			Sub About()
-				WScript.Echo("¡¶¹ØÓÚ±¾³ÌĞò¡·")
+				WScript.Echo("ã€Šå…³äºæœ¬ç¨‹åºã€‹")
 				WScript.Echo("")
 				WScript.Echo(ProductName)
-				WScript.Echo("°æ±¾ºÅ£º" & VersionName)
-				WScript.Echo("ÄÚ²¿°æ±¾£º" & VersionNum)
-				WScript.Echo("×îºó±à¼­Ê±¼ä£º" & LastVersiondTime)
+				WScript.Echo("ç‰ˆæœ¬å·ï¼š" & VersionName)
+				WScript.Echo("å†…éƒ¨ç‰ˆæœ¬ï¼š" & VersionNum)
+				WScript.Echo("æœ€åç¼–è¾‘æ—¶é—´ï¼š" & LastVersiondTime)
 				WScript.Echo("")
-				WScript.Echo("    ±¾³ÌĞòµÄÖø×÷È¨¹éTECH_NoobºÍĞ¡·ÊÑòËùÓĞ¡£ËùÓĞÈ¨Àû±£Áô¡£")
-				WScript.Echo("    ±¾³ÌĞò²»»á¼ÇÂ¼ÄúµÄÈÎºÎ¸öÈËĞÅÏ¢¡£ÇëÄú·ÅĞÄÊ¹ÓÃ¡£")
-				WScript.Echo("    ±¾³ÌĞòÒ²²»°üº¬ÈÎºÎ¶ñÒâ´úÂë£¬µ«²»ÅÅ³ı±»ËûÈËÀ¦°óºÚ¿ÍÈí¼şµÄ¿ÉÄÜ¡£Çë´ÓÕı¹æÇşµÀ»ñÈ¡¸Ã³ÌĞò¡£")
-				WScript.Echo("    Èç¹ûÄãĞèÒªÁªÏµ±¾³ÌĞòµÄ¿ª·¢Õß£¬ÇëÍ¨¹ıÏÂÁĞÇşµÀ£º")
-				WScript.Echo("ÍøÕ¾£º")
-				WScript.Echo("	¿ª·¢Õß2£ºyangruixian.icoc.me")	
-				WScript.Echo("ÓÊÏä£º")
-				WScript.Echo("	TECH_N00b£º3464943410@qq.com")
-				WScript.Echo("	¿ª·¢Õß2£ºjoengjeoijin@outlook.com")
-				WScript.Echo("QQ£º")
-				WScript.Echo("TECH_N00b£º3464943410")
-				WScript.Echo("Èç¹ûÄú»¹ÓĞÈÎºÎÒÉÎÊ£¬»¶Ó­ºÍÎÒÃÇÁªÏµ¡£")
+				WScript.Echo("    æœ¬ç¨‹åºçš„è‘—ä½œæƒå½’TECH_Noobå’Œå°è‚¥ç¾Šæ‰€æœ‰ã€‚æ‰€æœ‰æƒåˆ©ä¿ç•™ã€‚")
+				WScript.Echo("    æœ¬ç¨‹åºä¸ä¼šè®°å½•æ‚¨çš„ä»»ä½•ä¸ªäººä¿¡æ¯ã€‚è¯·æ‚¨æ”¾å¿ƒä½¿ç”¨ã€‚")
+				WScript.Echo("    æœ¬ç¨‹åºä¹Ÿä¸åŒ…å«ä»»ä½•æ¶æ„ä»£ç ï¼Œä½†ä¸æ’é™¤è¢«ä»–äººæ†ç»‘é»‘å®¢è½¯ä»¶çš„å¯èƒ½ã€‚è¯·ä»æ­£è§„æ¸ é“è·å–è¯¥ç¨‹åºã€‚")
+				WScript.Echo("    å¦‚æœä½ éœ€è¦è”ç³»æœ¬ç¨‹åºçš„å¼€å‘è€…ï¼Œè¯·é€šè¿‡ä¸‹åˆ—æ¸ é“ï¼š")
+				WScript.Echo("ç½‘ç«™ï¼š")
+				WScript.Echo("	å¼€å‘è€…2ï¼šyangruixian.icoc.me")	
+				WScript.Echo("é‚®ç®±ï¼š")
+				WScript.Echo("	TECH_N00bï¼š3464943410@qq.com")
+				WScript.Echo("	å¼€å‘è€…2ï¼šjoengjeoijin@outlook.com")
+				WScript.Echo("QQï¼š")
+				WScript.Echo("TECH_N00bï¼š3464943410")
+				WScript.Echo("å¦‚æœæ‚¨è¿˜æœ‰ä»»ä½•ç–‘é—®ï¼Œæ¬¢è¿å’Œæˆ‘ä»¬è”ç³»ã€‚")
 			End Sub
 
 			Function ReadAll(ByVal filepath)
