@@ -96,6 +96,7 @@
                 'Quit' : window.close
             }
 
+
             function TextOutPut(strText) {
                 var pNode = document.createElement("p");
                 pNode.innerText = strText;
@@ -105,12 +106,29 @@
             function JsCodeRunner(strCode) {
                 eval(strCode);
             }
+
+            function placeCaretAtEnd(el) { //传入光标要去的jq节点对象
+                el.focus();
+                if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+                    var range = document.createRange();
+                    range.selectNodeContents(el);
+                    range.collapse(false);
+                    var sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                } else if (typeof document.body.createTextRange != "undefined") {
+                    var textRange = document.body.createTextRange();
+                    textRange.moveToElementText(el);
+                    textRange.collapse(false);
+                    textRange.select();
+                }
+            }
         </script>
         <script language="VBScript">
             'Option Explicit
             Const ERR_MODULE_FILE_NOT_FOUND = 1
             
-            Import("HighLight.vbs") '语法高亮模块
+            Import "HighLight.vbs" '语法高亮模块
 
 
             Sub Import(ByVal strVBScriptFile)
@@ -145,7 +163,7 @@
 '                Next
 '                Help_Str=Help_Str&"}"&vbCrLf&vbCrLf 
 '                On Error Resume Next
-'                    ExecuteGlobal(FileStr)
+'                    ExecuteGlobal FileStr)
 '                    If Err.Number<>0 Then WS.Run FileStr:Exit sub
 '                On Error Goto 0    
             End Sub 
@@ -182,20 +200,19 @@
                 With document
                     If .selection.createRange().text = "" Then '未选中文字时
                         Call .getElementById(InputerID()).Focus
+                        .selection.createRange().pasteHTML("<span id='caret'></span>")
+                    Else
+                        'msgbox .selection.createRange().text
+                        set d=document.getElementById("caret")
+                        placeCaretAtEnd d
                     End If
                 End With
             End Sub
             
+
             Rem 按键处理。
-            Public strSavedCode
             Function OnKeyPress()
                 With document.getElementById(InputerID())
-                    Rem 按键后进行高亮处理。
-                    If strSavedCode <> .innerText Then
-                        .innerHTML = Highlight(.innerText)
-                        strSavedCode = .innerText
-                    End If
-                    
                     Rem 处理特殊按键。
                     'WScript.echo window.event.keyCode
                     Select Case window.event.keyCode
@@ -237,6 +254,26 @@
                 End With
             End Function
             
+            Rem 代码自动高亮。
+            Public strSavedCode
+            setInterval GetRef("AutoHighLight"),100
+            Function AutoHighLight()
+                Rem 由于高亮后HTML结构改变，浏览器无法找到原先位置，会将光标移动到输入区域末尾。
+                Rem 这就导致光标固定在末尾无法移动，故需要手动备份光标位置。
+                
+                Rem 保存光标位置。
+                Set objTextRange = document.body.createTextRange()
+                document.getElementById(InputerID()).focus
+                'objTextRange.moveToElementText document.getElementById(InputerID())
+                'objTextRange.move "word",-1
+                Rem 代码高亮。
+                With document.getElementById(InputerID())
+                    .innerHTML = Highlight(.innerText)
+                    strSavedCode = .innerText
+                End With
+                Rem 恢复光标位置。
+            End Function
+
             Sub CodeRunner(strCode)
                 On Error Resume Next
                 ExecuteGlobal strCode
