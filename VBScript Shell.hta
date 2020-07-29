@@ -128,7 +128,7 @@
                 End If
                 
                 If Not FSO.FileExists(strVBScriptFile) Then
-                    Err.Raise ERR_MODULE_FILE_NOT_FOUND,"库未找到","ImportVBS未找到您指定的文件。",""
+                    Err.Raise ERR_MODULE_FILE_NOT_FOUND,"库未找到","Import未找到您指定的文件。",""
                     Exit Sub
                 End If
                 ExecuteGlobal objFileSystem.OpenTextFile(strVBScriptFile).ReadAll
