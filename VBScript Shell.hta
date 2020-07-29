@@ -112,7 +112,6 @@
                         Err.Raise ERR_MODULE_FILE_NOT_FOUND,"库未找到","Import未找到您指定的文件",""
                         Exit Sub
                     End If
-                    msgbox strScriptFilePath
                     ExecuteGlobal objFileSystem.OpenTextFile(strScriptFilePath).ReadAll
                 ElseIf UCase(objFileSystem.GetExtensionName(strScriptFilePath)) = "JS" Then
                     If objFileSystem.FileExists(strHtaPath & "\Libraries\JavaScript\" & strScriptFilePath) Then
@@ -125,7 +124,6 @@
                         Err.Raise ERR_MODULE_FILE_NOT_FOUND,"库未找到","Import未找到您指定的文件",""
                         Exit Sub
                     End If
-                    msgbox strScriptFilePath
                     JsCodeRunner objFileSystem.OpenTextFile(strScriptFilePath).ReadAll
                 End If
 
