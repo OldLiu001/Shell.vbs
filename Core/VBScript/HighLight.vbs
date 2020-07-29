@@ -1,112 +1,112 @@
 Function HighLight(strToHighlight)
-	Rem Vbsé«˜äº®å‡½æ•°ï¼Œè€åˆ˜ç¼–å†™ã€‚
+	Rem Vbs¸ßÁÁº¯Êı£¬ÀÏÁõ±àĞ´¡£
 	Rem http://www.bathome.net/thread-47323-1-1.html
-	Rem HTMLç‰¹æ®Šå­—ç¬¦åŠæ ‡ç­¾å¤„ç†æ„Ÿè°¢bbaaã€‚
-	Rem çµæ„Ÿ From Demon's Vbs-Beautifier
+	Rem HTMLÌØÊâ×Ö·û¼°±êÇ©´¦Àí¸ĞĞ»bbaa¡£
+	Rem Áé¸Ğ From Demon's Vbs-Beautifier
 	
-	Rem å¸¸é‡è®¾ç½®
+	Rem ³£Á¿ÉèÖÃ
 	Dim STRING_FLAG,COMMENT_FLAG,BLANK_FLAG,SPECIAL_CHAR_FLAG
-	Dim [ç¬¦å·é›†åˆ],[ä¿ç•™å­—é›†åˆ],[å†…ç½®å‡½æ•°é›†åˆ],[å†…ç½®å¸¸é‡é›†åˆ]
+	Dim [·ûºÅ¼¯ºÏ],[±£Áô×Ö¼¯ºÏ],[ÄÚÖÃº¯Êı¼¯ºÏ],[ÄÚÖÃ³£Á¿¼¯ºÏ]
 	STRING_FLAG = Chr(1)
 	COMMENT_FLAG = Chr(2)
 	BLANK_FLAG = Chr(3)
 	SPECIAL_CHAR_FLAG = Chr(4)
-	[ç¬¦å·é›†åˆ] = ",./\()<=>+-*^&"
-	[ä¿ç•™å­—é›†åˆ] = Split("And As Boolean ByRef Byte ByVal Call Case Class Const Currency Debug Dim Do Double Each Else ElseIf Empty End EndIf Enum Eqv Event Exit Explicit False For Function Get Goto If Imp Implements In Integer Is Let Like Long Loop LSet Me Mod New Next Not Nothing Null On Option Optional Or ParamArray Preserve Private Property Public RaiseEvent ReDim Resume RSet Select Set Shared Single Static Stop Sub Then To True Type TypeOf Until Variant WEnd While With Xor"," ")
-	[å†…ç½®å‡½æ•°é›†åˆ] = Split("Abs Array Asc Atn CBool CByte CCur CDate CDbl CInt CLng CSng CStr Chr Cos CreateObject Date DateAdd DateDiff DatePart DateSerial DateValue Day Escape Eval Exp Filter Fix FormatCurrency FormatDateTime FormatNumber FormatPercent GetLocale GetObject GetRef Hex Hour InStr InStrRev InputBox Int IsArray IsDate IsEmpty IsNull IsNumeric IsObject Join LBound LCase LTrim Left Len LoadPicture Log Mid Minute Month MonthName MsgBox Now Oct Randomize RGB RTrim Replace Right Rnd Round ScriptEngine ScriptEngineBuildVersion ScriptEngineMajorVersion ScriptEngineMinorVersion Second SetLocale Sgn Sin Space Split Sqr StrComp StrReverse String Tan Time TimeSerial TimeValue Timer Trim TypeName UBound UCase Unescape VarType Weekday WeekdayName Year"," ")
-	[å†…ç½®å¸¸é‡é›†åˆ] = Split("vbBlack vbRed vbGreen vbYellow vbBlue vbMagenta vbCyan vbWhite vbBinaryCompare vbTextCompare vbSunday vbMonday vbTuesday vbWednesday vbThursday vbFriday vbSaturday vbUseSystemDayOfWeek vbFirstJan1 vbFirstFourDays vbFirstFullWeek vbGeneralDate vbLongDate vbShortDate vbLongTime vbShortTime vbObjectError vbOKOnly vbOKCancel vbAbortRetryIgnore vbYesNoCancel vbYesNo vbRetryCancel vbCritical vbQuestion vbExclamation vbInformation vbDefaultButton1 vbDefaultButton2 vbDefaultButton3 vbDefaultButton4 vbApplicationModal vbSystemModal vbOK vbCancel vbAbort vbRetry vbIgnore vbYes vbNo vbCr vbCrLf vbFormFeed vbLf vbNewLine vbNullChar vbNullString vbTab vbVerticalTab vbUseDefault vbTrue vbFalse vbEmpty vbNull vbInteger vbLong vbSingle vbDouble vbCurrency vbDate vbString vbObject vbError vbBoolean vbVariant vbDataObject vbDecimal vbByte vbArray WScript Wsh"," ")
+	[·ûºÅ¼¯ºÏ] = ",./\()<=>+-*^&"
+	[±£Áô×Ö¼¯ºÏ] = Split("And As Boolean ByRef Byte ByVal Call Case Class Const Currency Debug Dim Do Double Each Else ElseIf Empty End EndIf Enum Eqv Event Exit Explicit False For Function Get Goto If Imp Implements In Integer Is Let Like Long Loop LSet Me Mod New Next Not Nothing Null On Option Optional Or ParamArray Preserve Private Property Public RaiseEvent ReDim Resume RSet Select Set Shared Single Static Stop Sub Then To True Type TypeOf Until Variant WEnd While With Xor"," ")
+	[ÄÚÖÃº¯Êı¼¯ºÏ] = Split("Abs Array Asc Atn CBool CByte CCur CDate CDbl CInt CLng CSng CStr Chr Cos CreateObject Date DateAdd DateDiff DatePart DateSerial DateValue Day Escape Eval Exp Filter Fix FormatCurrency FormatDateTime FormatNumber FormatPercent GetLocale GetObject GetRef Hex Hour InStr InStrRev InputBox Int IsArray IsDate IsEmpty IsNull IsNumeric IsObject Join LBound LCase LTrim Left Len LoadPicture Log Mid Minute Month MonthName MsgBox Now Oct Randomize RGB RTrim Replace Right Rnd Round ScriptEngine ScriptEngineBuildVersion ScriptEngineMajorVersion ScriptEngineMinorVersion Second SetLocale Sgn Sin Space Split Sqr StrComp StrReverse String Tan Time TimeSerial TimeValue Timer Trim TypeName UBound UCase Unescape VarType Weekday WeekdayName Year"," ")
+	[ÄÚÖÃ³£Á¿¼¯ºÏ] = Split("vbBlack vbRed vbGreen vbYellow vbBlue vbMagenta vbCyan vbWhite vbBinaryCompare vbTextCompare vbSunday vbMonday vbTuesday vbWednesday vbThursday vbFriday vbSaturday vbUseSystemDayOfWeek vbFirstJan1 vbFirstFourDays vbFirstFullWeek vbGeneralDate vbLongDate vbShortDate vbLongTime vbShortTime vbObjectError vbOKOnly vbOKCancel vbAbortRetryIgnore vbYesNoCancel vbYesNo vbRetryCancel vbCritical vbQuestion vbExclamation vbInformation vbDefaultButton1 vbDefaultButton2 vbDefaultButton3 vbDefaultButton4 vbApplicationModal vbSystemModal vbOK vbCancel vbAbort vbRetry vbIgnore vbYes vbNo vbCr vbCrLf vbFormFeed vbLf vbNewLine vbNullChar vbNullString vbTab vbVerticalTab vbUseDefault vbTrue vbFalse vbEmpty vbNull vbInteger vbLong vbSingle vbDouble vbCurrency vbDate vbString vbObject vbError vbBoolean vbVariant vbDataObject vbDecimal vbByte vbArray WScript Wsh"," ")
 	
-	Rem æ­£åˆ™å¯¹è±¡åˆå§‹åŒ–
+	Rem ÕıÔò¶ÔÏó³õÊ¼»¯
 	Dim re
 	Set re = New RegExp
 	re.Global = True
 	re.IgnoreCase = True
 	re.MultiLine = False
 	
-	Rem è¯»å–ä»£ç 
+	Rem ¶ÁÈ¡´úÂë
 	Dim strCode
 	strCode = strToHighlight
 	
-	Rem HTMLç‰¹æ®Šç¬¦å·é¢„å¤„ç†
-	Dim [ç€è‰²æ ‡ç­¾],[æ¢è¡Œæ ‡ç­¾],[ç©ºç™½å­—ç¬¦]
-	[ç€è‰²æ ‡ç­¾] = "<span style=""color:|ReplaceHere|;"">$1</span>"
-	[æ¢è¡Œæ ‡ç­¾] = "<br>"
-	[ç©ºç™½å­—ç¬¦] = "&nbsp;"
+	Rem HTMLÌØÊâ·ûºÅÔ¤´¦Àí
+	Dim [×ÅÉ«±êÇ©],[»»ĞĞ±êÇ©],[¿Õ°××Ö·û]
+	[×ÅÉ«±êÇ©] = "<span style=""color:|ReplaceHere|;"">$1</span>"
+	[»»ĞĞ±êÇ©] = "<br>"
+	[¿Õ°××Ö·û] = "&nbsp;"
 	strCode = Replace(strCode,"&",SPECIAL_CHAR_FLAG&"amp;")
 	strCode = Replace(strCode,">",SPECIAL_CHAR_FLAG&"gt;")
 	strCode = Replace(strCode,"<",SPECIAL_CHAR_FLAG&"lt;")
 	
-	Rem é¢„å¤„ç†å­—ç¬¦ä¸²
-	Dim [å­—ç¬¦ä¸²é›†åˆ]
+	Rem Ô¤´¦Àí×Ö·û´®
+	Dim [×Ö·û´®¼¯ºÏ]
 	re.Pattern = """.*?"""
-	Set [å­—ç¬¦ä¸²é›†åˆ] = re.Execute(strCode)
+	Set [×Ö·û´®¼¯ºÏ] = re.Execute(strCode)
 	strCode = re.Replace(strCode, STRING_FLAG)
 	
-	Rem é¢„å¤„ç†ç©ºå­—ç¬¦
+	Rem Ô¤´¦Àí¿Õ×Ö·û
 	strCode = Replace(strCode,Chr(9),"    ")
 	strCode = Replace(strCode," ",BLANK_FLAG)
 	
-	Rem é¢„å¤„ç†æ¢è¡Œ
+	Rem Ô¤´¦Àí»»ĞĞ
 	strCode = Replace(strCode,vbNewLine,vbCr)
 	strCode = Replace(strCode,vbLf,vbCr)
 	
-	Rem é¢„å¤„ç†æ³¨é‡Š
-	Dim [æ³¨é‡Šé›†åˆ]
-	re.Pattern = "((?:\x03*Rem\x03+|')[^\r]*)" 'åœ¨æ­¤ä¸¥é‡çš„æ„Ÿè°¢bbaaæŒ‡å¯¼
-	Set [æ³¨é‡Šé›†åˆ] = re.Execute(strCode)
+	Rem Ô¤´¦Àí×¢ÊÍ
+	Dim [×¢ÊÍ¼¯ºÏ]
+	re.Pattern = "((?:\x03*Rem\x03+|')[^\r]*)" 'ÔÚ´ËÑÏÖØµÄ¸ĞĞ»bbaaÖ¸µ¼
+	Set [×¢ÊÍ¼¯ºÏ] = re.Execute(strCode)
 	strCode = re.Replace(strCode, COMMENT_FLAG)
 	
-	Rem æ·»åŠ ç€è‰²æ ‡ç­¾ä»¥åŠHTMLç‰¹æ®Šç¬¦å·å¤„ç†
+	Rem Ìí¼Ó×ÅÉ«±êÇ©ÒÔ¼°HTMLÌØÊâ·ûºÅ´¦Àí
 	With re
-		Rem å·æ‡’æ“ä½œï¼Œç”¨æ­£åˆ™å°†ç¬¦å·é›†åˆæ›¿æ¢ä¸ºæ­£åˆ™è¡¨è¾¾å¼ï¼Œå†ç”¨æ›¿æ¢å‡ºæ¥çš„æ­£åˆ™è¡¨è¾¾å¼å¤„ç†strCodeã€‚
-		Rem ä¸‹é¢ä¸‰è¡Œçš„ä»£ç å®Œæˆäº† ",./\()<=>+-*&^" ==> "(\,|\.|\/|\\|\(|\)|\<|\=|\>|\+|\-|\*|\&|\^)"
+		Rem ÍµÀÁ²Ù×÷£¬ÓÃÕıÔò½«·ûºÅ¼¯ºÏÌæ»»ÎªÕıÔò±í´ïÊ½£¬ÔÙÓÃÌæ»»³öÀ´µÄÕıÔò±í´ïÊ½´¦ÀístrCode¡£
+		Rem ÏÂÃæÈıĞĞµÄ´úÂëÍê³ÉÁË ",./\()<=>+-*&^" ==> "(\,|\.|\/|\\|\(|\)|\<|\=|\>|\+|\-|\*|\&|\^)"
 		.Pattern = ""
-		.Pattern = re.Replace([ç¬¦å·é›†åˆ],"|\")
+		.Pattern = re.Replace([·ûºÅ¼¯ºÏ],"|\")
 		.Pattern = "(" & Left(Right(.Pattern,Len(.Pattern) - 1),Len(.Pattern) - 3) & ")"
-		strCode = .Replace(StrCode,Replace([ç€è‰²æ ‡ç­¾],"|ReplaceHere|","OrangeRed"))
+		strCode = .Replace(StrCode,Replace([×ÅÉ«±êÇ©],"|ReplaceHere|","OrangeRed"))
 	End With
 	
 	strCode = Replace(strCode,SPECIAL_CHAR_FLAG&"amp;","<span style=""color:OrangeRed;"">"&SPECIAL_CHAR_FLAG&"amp;"&"</span>")
 	strCode=Replace(strCode,SPECIAL_CHAR_FLAG&"gt;","<span style=""color:OrangeRed;"">"&SPECIAL_CHAR_FLAG&"gt;"&"</span>")
 	strCode=Replace(strCode,SPECIAL_CHAR_FLAG&"lt;","<span style=""color:OrangeRed;"">"&SPECIAL_CHAR_FLAG&"lt;"&"</span>")
 	
-	Dim [ä¿ç•™å­—]
-	For Each [ä¿ç•™å­—] In [ä¿ç•™å­—é›†åˆ]
-		re.Pattern = "\b("&[ä¿ç•™å­—]&")\b"
-		strCode = re.Replace(strCode, Replace([ç€è‰²æ ‡ç­¾],"|ReplaceHere|","MediumPurple"))
+	Dim [±£Áô×Ö]
+	For Each [±£Áô×Ö] In [±£Áô×Ö¼¯ºÏ]
+		re.Pattern = "\b("&[±£Áô×Ö]&")\b"
+		strCode = re.Replace(strCode, Replace([×ÅÉ«±êÇ©],"|ReplaceHere|","MediumPurple"))
 	Next
 	
-	Dim [å†…ç½®å‡½æ•°]
-	For Each [å†…ç½®å‡½æ•°] In [å†…ç½®å‡½æ•°é›†åˆ]
-		re.Pattern = "\b("&[å†…ç½®å‡½æ•°]&")\b"
-		strCode = re.Replace(strCode, Replace([ç€è‰²æ ‡ç­¾],"|ReplaceHere|","Orange"))
+	Dim [ÄÚÖÃº¯Êı]
+	For Each [ÄÚÖÃº¯Êı] In [ÄÚÖÃº¯Êı¼¯ºÏ]
+		re.Pattern = "\b("&[ÄÚÖÃº¯Êı]&")\b"
+		strCode = re.Replace(strCode, Replace([×ÅÉ«±êÇ©],"|ReplaceHere|","Orange"))
 	Next
 	
-	Dim [å†…ç½®å¸¸é‡]
-	For Each [å†…ç½®å¸¸é‡] In [å†…ç½®å¸¸é‡é›†åˆ]
-		re.Pattern = "\b("&[å†…ç½®å¸¸é‡]&")\b"
-		strCode = re.Replace(strCode, Replace([ç€è‰²æ ‡ç­¾],"|ReplaceHere|","LightBlue"))
+	Dim [ÄÚÖÃ³£Á¿]
+	For Each [ÄÚÖÃ³£Á¿] In [ÄÚÖÃ³£Á¿¼¯ºÏ]
+		re.Pattern = "\b("&[ÄÚÖÃ³£Á¿]&")\b"
+		strCode = re.Replace(strCode, Replace([×ÅÉ«±êÇ©],"|ReplaceHere|","LightBlue"))
 	Next
 	
-	Rem å¤„ç†æ³¨é‡Š
-	Dim [æ³¨é‡Š]
-	For Each [æ³¨é‡Š] In [æ³¨é‡Šé›†åˆ]
+	Rem ´¦Àí×¢ÊÍ
+	Dim [×¢ÊÍ]
+	For Each [×¢ÊÍ] In [×¢ÊÍ¼¯ºÏ]
 		strCode = Replace(strCode, COMMENT_FLAG, _
-		Replace(Replace([ç€è‰²æ ‡ç­¾],"|ReplaceHere|","Gray"),"$1",[æ³¨é‡Š]), 1, 1) 'or #00ff00
+		Replace(Replace([×ÅÉ«±êÇ©],"|ReplaceHere|","Gray"),"$1",[×¢ÊÍ]), 1, 1) 'or #00ff00
 	Next
 	
-	Rem å¤„ç†å­—ç¬¦ä¸²
-	Dim [å­—ç¬¦ä¸²]
-	For Each [å­—ç¬¦ä¸²] In [å­—ç¬¦ä¸²é›†åˆ]
+	Rem ´¦Àí×Ö·û´®
+	Dim [×Ö·û´®]
+	For Each [×Ö·û´®] In [×Ö·û´®¼¯ºÏ]
 		strCode = Replace(strCode, STRING_FLAG, _
-		Replace(Replace([ç€è‰²æ ‡ç­¾],"|ReplaceHere|","LightGreen"),"$1",[å­—ç¬¦ä¸²]), 1, 1)
+		Replace(Replace([×ÅÉ«±êÇ©],"|ReplaceHere|","LightGreen"),"$1",[×Ö·û´®]), 1, 1)
 	Next
 	
-	Rem å¤„ç†æ¢è¡Œå’Œç©ºå­—ç¬¦
-	strCode = Replace(strCode,vbCr,[æ¢è¡Œæ ‡ç­¾])
-	strCode = Replace(strCode,BLANK_FLAG,[ç©ºç™½å­—ç¬¦])
+	Rem ´¦Àí»»ĞĞºÍ¿Õ×Ö·û
+	strCode = Replace(strCode,vbCr,[»»ĞĞ±êÇ©])
+	strCode = Replace(strCode,BLANK_FLAG,[¿Õ°××Ö·û])
 	strCode = Replace(strCode,SPECIAL_CHAR_FLAG,Chr(&H26))
 	
-	Rem å¤„ç†å®Œæˆã€‚
+	Rem ´¦ÀíÍê³É¡£
 	Highlight = strCode
 End Function
