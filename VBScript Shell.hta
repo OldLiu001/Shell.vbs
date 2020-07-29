@@ -135,26 +135,30 @@
             Import "HighLight.vbs" '语法高亮模块
 
 
-            Sub Import(ByVal strVBScriptFile)
+            Sub Import(ByVal strScriptFilePath)
                 Dim objFileSystem
                 Set objFileSystem = CreateObject("Scripting.FileSystemObject")
                 Dim strHtaPath
                 strHtaPath = objFileSystem.GetParentFolderName(WScript.ScriptFullName)
                 
                 Rem Libraries与Core中有同名文件时，将会载入Core中的文件。
-                If objFileSystem.FileExists(strHtaPath & "\Libraries\VBScript\" & strVBScriptFile) Then
-                    strVBScriptFile = strHtaPath & "\Libraries\VBScript\" & strVBScriptFile
+                If objFileSystem.FileExists(strHtaPath & "\Libraries\VBScript\" & strScriptFilePath) Then
+                    strScriptFilePath = strHtaPath & "\Libraries\VBScript\" & strScriptFilePath
                 End If
-                If objFileSystem.FileExists(strHtaPath & "\Core\VBScript\" & strVBScriptFile) Then
-                    strVBScriptFile = strHtaPath & "\Core\VBScript\" & strVBScriptFile
+                If objFileSystem.FileExists(strHtaPath & "\Core\VBScript\" & strScriptFilePath) Then
+                    strScriptFilePath = strHtaPath & "\Core\VBScript\" & strScriptFilePath
                 End If
                 
-                If Not FSO.FileExists(strVBScriptFile) Then
+                If Not FSO.FileExists(strScriptFilePath) Then
                     Err.Raise ERR_MODULE_FILE_NOT_FOUND,"库未找到","Import未找到您指定的文件。",""
                     Exit Sub
                 End If
-                ExecuteGlobal objFileSystem.OpenTextFile(strVBScriptFile).ReadAll
-                
+                If UCase(objFileSystem.GetExtensionName(strScriptFilePath)) = "VBS" Then
+                    ExecuteGlobal objFileSystem.OpenTextFile(strScriptFilePath).ReadAll
+                ElseIf UCase(objFileSystem.GetExtensionName(strScriptFilePath)) = "JS" Then
+                    JsCodeRunner objFileSystem.OpenTextFile(strScriptFilePath).ReadAll
+                End If
+
 '                LibFiles=LibFiles&sInstFile&vbCrLf
 '                FileStr=ReadAll(sInstFile)
 '                filearr=Split(FileStr,vbCrLf)
