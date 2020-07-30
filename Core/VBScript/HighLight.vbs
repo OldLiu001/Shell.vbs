@@ -3,6 +3,7 @@ Function HighLight(strToHighlight)
 	Rem http://www.bathome.net/thread-47323-1-1.html
 	Rem HTML特殊字符及标签处理感谢bbaa。
 	Rem 灵感 From Demon's Vbs-Beautifier
+	Rem 此版本为保存0x5字符做了特殊修改。
 	
 	Rem 常量设置
 	Dim STRING_FLAG,COMMENT_FLAG,BLANK_FLAG,SPECIAL_CHAR_FLAG
@@ -11,6 +12,7 @@ Function HighLight(strToHighlight)
 	COMMENT_FLAG = Chr(2)
 	BLANK_FLAG = Chr(3)
 	SPECIAL_CHAR_FLAG = Chr(4)
+	CURSOR_FLAG = Chr(5) '为VBS Shell新增的光标标记
 	[符号集合] = ",./\()<=>+-*^&"
 	[保留字集合] = Split("And As Boolean ByRef Byte ByVal Call Case Class Const Currency Debug Dim Do Double Each Else ElseIf Empty End EndIf Enum Eqv Event Exit Explicit False For Function Get Goto If Imp Implements In Integer Is Let Like Long Loop LSet Me Mod New Next Not Nothing Null On Option Optional Or ParamArray Preserve Private Property Public RaiseEvent ReDim Resume RSet Select Set Shared Single Static Stop Sub Then To True Type TypeOf Until Variant WEnd While With Xor"," ")
 	[内置函数集合] = Split("Abs Array Asc Atn CBool CByte CCur CDate CDbl CInt CLng CSng CStr Chr Cos CreateObject Date DateAdd DateDiff DatePart DateSerial DateValue Day Escape Eval Exp Filter Fix FormatCurrency FormatDateTime FormatNumber FormatPercent GetLocale GetObject GetRef Hex Hour InStr InStrRev InputBox Int IsArray IsDate IsEmpty IsNull IsNumeric IsObject Join LBound LCase LTrim Left Len LoadPicture Log Mid Minute Month MonthName MsgBox Now Oct Randomize RGB RTrim Replace Right Rnd Round ScriptEngine ScriptEngineBuildVersion ScriptEngineMajorVersion ScriptEngineMinorVersion Second SetLocale Sgn Sin Space Split Sqr StrComp StrReverse String Tan Time TimeSerial TimeValue Timer Trim TypeName UBound UCase Unescape VarType Weekday WeekdayName Year"," ")
@@ -38,7 +40,7 @@ Function HighLight(strToHighlight)
 	
 	Rem 预处理字符串
 	Dim [字符串集合]
-	re.Pattern = """.*?"""
+	re.Pattern = """[.\x05]*?"""
 	Set [字符串集合] = re.Execute(strCode)
 	strCode = re.Replace(strCode, STRING_FLAG)
 	
@@ -52,7 +54,7 @@ Function HighLight(strToHighlight)
 	
 	Rem 预处理注释
 	Dim [注释集合]
-	re.Pattern = "((?:\x03*Rem\x03+|')[^\r]*)" '在此严重的感谢bbaa指导
+	re.Pattern = "((?:\x05?[\x03\x05]*R\x05?e\x05?m\x05?\x03+\x05?|'\x05?)[^\r]*)" '在此严重的感谢bbaa指导
 	Set [注释集合] = re.Execute(strCode)
 	strCode = re.Replace(strCode, COMMENT_FLAG)
 	
@@ -72,19 +74,19 @@ Function HighLight(strToHighlight)
 	
 	Dim [保留字]
 	For Each [保留字] In [保留字集合]
-		re.Pattern = "\b("&[保留字]&")\b"
+		re.Pattern = "\b("&CursorSupport([保留字])&")\b"
 		strCode = re.Replace(strCode, Replace([着色标签],"|ReplaceHere|",GetColor("typePreserved")))
 	Next
 	
 	Dim [内置函数]
 	For Each [内置函数] In [内置函数集合]
-		re.Pattern = "\b("&[内置函数]&")\b"
+		re.Pattern = "\b("&CursorSupport([内置函数])&")\b"
 		strCode = re.Replace(strCode, Replace([着色标签],"|ReplaceHere|",GetColor("typeFunction")))
 	Next
 	
 	Dim [内置常量]
 	For Each [内置常量] In [内置常量集合]
-		re.Pattern = "\b("&[内置常量]&")\b"
+		re.Pattern = "\b("&CursorSupport([内置常量])&")\b"
 		strCode = re.Replace(strCode, Replace([着色标签],"|ReplaceHere|",GetColor("typeConst")))
 	Next
 	
@@ -111,3 +113,10 @@ Function HighLight(strToHighlight)
 	Highlight = strCode
 End Function
 
+Function CursorSupport(strKeyword) '为了保存光标位置而设计的正则修改函数
+	CursorSupport = "\x05?"
+	Dim lngPtr
+	For lngPtr = 1 To Len(strKeyword)
+		CursorSupport = CursorSupport & Mid(strKeyword,lngPtr,1) & "\x05?"
+	Next
+End Function
