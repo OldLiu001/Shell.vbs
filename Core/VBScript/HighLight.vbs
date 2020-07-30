@@ -40,7 +40,7 @@ Function HighLight(strToHighlight)
 	
 	Rem Ô¤´¦Àí×Ö·û´®
 	Dim [×Ö·û´®¼¯ºÏ]
-	re.Pattern = """[.\x05]*?"""
+	re.Pattern = """(?:.|\x05)*?"""
 	Set [×Ö·û´®¼¯ºÏ] = re.Execute(strCode)
 	strCode = re.Replace(strCode, STRING_FLAG)
 	
