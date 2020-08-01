@@ -56,7 +56,7 @@
 					VBScript
 				</span>
 				&gt;
-				<span id="SingleLineInputer_0" contentEditable="True"></span>
+				<span id="SingleLineInputer_0" contentEditable="True" oncompositionend="AutoHighLight();"></span>
 				<div id="MultiLineInputer_0" contentEditable="False"></div>
 			</div>
 		</div>
@@ -164,10 +164,10 @@
 			
 
 			Rem 按键处理。
+			Public boolInputAreaUpdate
 			Function OnKeyPress()
 				With document.getElementById(InputerID())
 					Rem 处理特殊按键。
-					'WScript.echo window.event.keyCode
 					Select Case window.event.keyCode
 						Case 13 'Enter
 							If strInputMode = "SingleLineInputer" Then
@@ -203,17 +203,19 @@
 							End If
 							window.event.keyCode = 0
 							OnKeyPress = False
+						Case Else
+							boolInputAreaUpdate = True
 					End Select
 				End With
 			End Function
 			
 			Rem 代码自动高亮。
-			Public strSavedCode
 			setInterval GetRef("AutoHighLight"),100
 			Function AutoHighLight()
 				Rem 由于高亮后HTML结构改变，浏览器无法找到原先位置，会将光标移动到输入区域末尾。
 				Rem 这就导致光标固定在末尾无法移动，故需要手动备份光标位置。
-				If strSavedCode <> document.getElementById(InputerID()).innerText And document.selection.createRange().text = "" Then
+				If boolInputAreaUpdate  And document.selection.createRange().text = "" Then
+					boolInputAreaUpdate = False
 					Rem 保存光标位置。
 					document.selection.createRange().pasteHTML("&#05;") '0x5作为光标位置标记。
 					Rem 代码高亮。
@@ -221,7 +223,6 @@
 						Rem 为了保存光标字符，修改了HighLight函数。
 						Rem 修改后的HighLight函数会无视0x5，使得其在代码中的相对位置不变。
 						.innerHTML = Replace(Highlight(.innerText),Chr(5),"<span id='Cursor'></span>")
-						strSavedCode = .innerText
 					End With
 					Rem 恢复光标位置。
 					Dim objCursorNode
